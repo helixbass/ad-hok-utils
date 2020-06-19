@@ -28,7 +28,7 @@
     "typescript": "^3.9.5"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "lint": "eslint 'src/**/*.ts' 'src/**/*.tsx'",
     "test": "jest --config jestconfig.json",
     "prepare": "npm run build",
