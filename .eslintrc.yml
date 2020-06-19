@@ -15,6 +15,9 @@ rules:
     - args: after-used
       ignoreRestSiblings: true
       argsIgnorePattern: '^_'
+  react/display-name: off
+  react/prop-types: off
+  '@typescript-eslint/no-empty-function': off
 settings:
   react:
     version: detect
