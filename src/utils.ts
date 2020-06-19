@@ -1,7 +1,7 @@
 import {isArray} from 'lodash'
 
 type EnsureArrayType = <TMaybeArray>(
-  maybeArray: TMaybeArray
+  maybeArray: TMaybeArray,
 ) => TMaybeArray extends Array<any> ? TMaybeArray : Array<TMaybeArray>
 
 export const ensureArray: EnsureArrayType = (maybeArray) =>

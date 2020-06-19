@@ -8,9 +8,9 @@ type SuppressUnlessPropType = <
   TProps extends {},
   TPropNames extends keyof TProps
 >(
-  propNames: Array<TPropNames> | TPropNames
+  propNames: Array<TPropNames> | TPropNames,
 ) => (
-  props: TProps
+  props: TProps,
 ) => TProps & {[PropName in TPropNames]: NonNullable<TProps[PropName]>}
 
 const suppressUnlessProp: SuppressUnlessPropType = (propName) => {
@@ -18,7 +18,7 @@ const suppressUnlessProp: SuppressUnlessPropType = (propName) => {
   return branch(
     (props: {[propName: string]: any}) =>
       some((propName: string) => props[propName] == null)(propNames),
-    renderNothing()
+    renderNothing(),
   ) as any
 }
 
