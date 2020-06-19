@@ -4,6 +4,7 @@ import {some} from 'lodash/fp'
 import {ensureArray} from './utils'
 
 type SuppressUnlessPropType = <
+  // eslint-disable-next-line @typescript-eslint/ban-types
   TProps extends {},
   TPropNames extends keyof TProps
 >(
