@@ -1,15 +1,14 @@
 {
-    "compilerOptions": {
-        "module": "commonjs",
-        "target": "es5",
-        "declaration": true,
-        "outDir": "./lib",
-        "strict": true,
-        "jsx": "react",
-        "typeRoots": ["./types", "node_modules/@types"]
-    },
-    "include": [
-        "src"
-    ],
-    "exclude": ["node_modules", "**/__tests__/*"]
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "declaration": true,
+    "outDir": "./lib",
+    "strict": true,
+    "jsx": "react",
+    "typeRoots": ["./types", "node_modules/@types"],
+    "esModuleInterop": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

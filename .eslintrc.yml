@@ -6,6 +6,7 @@ parserOptions:
     jsx: true
 extends:
   - 'plugin:@typescript-eslint/recommended'
+  - plugin:react/recommended
   - plugin:prettier/recommended
 rules:
   '@typescript-eslint/no-explicit-any': off

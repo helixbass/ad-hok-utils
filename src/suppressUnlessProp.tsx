@@ -11,7 +11,8 @@ type SuppressUnlessPropType = <
   propNames: Array<TPropNames> | TPropNames,
 ) => (
   props: TProps,
-) => TProps & {[PropName in TPropNames]: NonNullable<TProps[PropName]>}
+) => TProps &
+  Required<{[PropName in TPropNames]: NonNullable<TProps[PropName]>}>
 
 const suppressUnlessProp: SuppressUnlessPropType = (propName) => {
   const propNames = ensureArray(propName)
