@@ -3,10 +3,7 @@ import {omit} from 'lodash'
 import {ensureArray} from './utils'
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
-const cleanupProps = <
-  TProps extends Record<string, unknown>,
-  TPropNames extends keyof TProps
->(
+const cleanupProps = <TProps extends {}, TPropNames extends keyof TProps>(
   propNames: TPropNames[] | TPropNames,
 ) => {
   const propNamesArray = ensureArray(propNames)

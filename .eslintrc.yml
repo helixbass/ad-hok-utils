@@ -18,6 +18,7 @@ rules:
   react/display-name: off
   react/prop-types: off
   '@typescript-eslint/no-empty-function': off
+  '@typescript-eslint/ban-types': off
 settings:
   react:
     version: detect
