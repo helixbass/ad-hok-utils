@@ -2,8 +2,11 @@
   "name": "ad-hok-utils",
   "version": "0.0.1-dev.0",
   "description": "Helpers to use with ad-hok",
-  "main": "index.js",
-  "repository": "https://github.com/helixbass/ad-hok-utils",
+  "main": "lib/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/helixbass/ad-hok-utils"
+  },
   "author": "Julian Rosse <@helixbass> <julian@helixbass.net> (http://helixbass.net/)",
   "license": "MIT",
   "private": false,
@@ -27,7 +30,10 @@
   "scripts": {
     "build": "tsc",
     "lint": "eslint 'src/**/*.ts' 'src/**/*.tsx'",
-    "test": "jest --config jestconfig.json"
+    "test": "jest --config jestconfig.json",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint"
   },
   "dependencies": {
     "@types/lodash": "^4.14.155",
@@ -40,5 +46,15 @@
   },
   "files": [
     "lib/**/*"
-  ]
+  ],
+  "types": "lib/index.d.ts",
+  "keywords": [
+    "ad-hok",
+    "react",
+    "hooks"
+  ],
+  "homepage": "https://github.com/helixbass/ad-hok-utils",
+  "bugs": {
+    "url": "https://github.com/helixbass/ad-hok-utils/issues"
+  }
 }
