@@ -7,7 +7,8 @@
     "strict": true,
     "jsx": "react",
     "typeRoots": ["./types", "node_modules/@types"],
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "keyofStringsOnly": true
   },
   "include": ["src"],
   "exclude": ["node_modules"]
