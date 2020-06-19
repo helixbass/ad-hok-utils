@@ -1,7 +1,7 @@
 import {branch, renderNothing} from 'ad-hok'
 import {some} from 'lodash/fp'
 
-import {ensureArray} from 'utils/fp'
+import {ensureArray} from './utils'
 
 type SuppressUnlessPropType = <
   TProps extends {},

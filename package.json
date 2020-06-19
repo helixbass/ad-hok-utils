@@ -2,9 +2,24 @@
   "name": "ad-hok-utils",
   "version": "0.0.1-dev.0",
   "description": "Helpers to use with ad-hok",
-  "main": "dist/index.js",
+  "main": "index.js",
   "repository": "https://github.com/helixbass/ad-hok-utils",
   "author": "Julian Rosse <@helixbass> <julian@helixbass.net> (http://helixbass.net/)",
   "license": "MIT",
-  "private": false
+  "private": false,
+  "devDependencies": {
+    "typescript": "^3.9.5"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.14.155",
+    "@types/prop-types": "^15.7.3",
+    "@types/react": "^16.9.38",
+    "ad-hok": "^0.1.0-beta.2",
+    "lodash": "^4.17.15",
+    "prop-types": "^15.7.2",
+    "react": "^16.13.1"
+  }
 }
