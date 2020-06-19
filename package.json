@@ -1,0 +1,10 @@
+{
+  "name": "ad-hok-utils",
+  "version": "0.0.1-dev.0",
+  "description": "Helpers to use with ad-hok",
+  "main": "dist/index.js",
+  "repository": "https://github.com/helixbass/ad-hok-utils",
+  "author": "Julian Rosse <@helixbass> <julian@helixbass.net> (http://helixbass.net/)",
+  "license": "MIT",
+  "private": false
+}
