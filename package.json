@@ -1,6 +1,6 @@
 {
   "name": "ad-hok-utils",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Helpers to use with ad-hok",
   "main": "lib/index.js",
   "repository": {
