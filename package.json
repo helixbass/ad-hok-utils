@@ -23,6 +23,7 @@
     "eslint-plugin-react": "^7.20.0",
     "jest": "^26.0.1",
     "prettier": "^2.0.5",
+    "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "ts-jest": "^26.1.0",
     "typescript": "^3.9.5"
@@ -41,8 +42,7 @@
     "@types/react": "^16.9.38",
     "ad-hok": "^0.1.0-beta.2",
     "lodash": "^4.17.15",
-    "prop-types": "^15.7.2",
-    "react": "^16.13.1"
+    "prop-types": "^15.7.2"
   },
   "files": [
     "lib/**/*"
@@ -56,5 +56,8 @@
   "homepage": "https://github.com/helixbass/ad-hok-utils",
   "bugs": {
     "url": "https://github.com/helixbass/ad-hok-utils/issues"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0"
   }
 }
