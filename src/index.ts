@@ -4,3 +4,4 @@ export {default as addPropIdentityStabilization} from './addPropIdentityStabiliz
 export {default as cleanupProps} from './cleanupProps'
 export {default as removeProps} from './removeProps'
 export {default as addEffectOnMount} from './addEffectOnMount'
+export {default as addNamedComponentBoundary} from './addNamedComponentBoundary'
