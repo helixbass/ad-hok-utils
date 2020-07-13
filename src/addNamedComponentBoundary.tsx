@@ -1,5 +1,5 @@
 import React, {FC} from 'react'
-import {UnchangedProps, addWrapperHOC, PropAddingHOCType} from 'ad-hok'
+import {CurriedUnchangedProps, addWrapperHOC, PropAddingHOC} from 'ad-hok'
 
 const getNamedPassthroughHOC = (name: string) => {
   const PassthroughComponent: FC = ({children}) => <>{children}</>
@@ -13,10 +13,10 @@ const getNamedPassthroughHOC = (name: string) => {
 
 type AddNamedComponentBoundaryType = <TProps>(
   name: string,
-) => UnchangedProps<TProps>
+) => CurriedUnchangedProps<TProps>
 
 const addNamedComponentBoundary: AddNamedComponentBoundaryType = (
   name: string,
-) => addWrapperHOC(getNamedPassthroughHOC(name) as PropAddingHOCType<{}>)
+) => addWrapperHOC(getNamedPassthroughHOC(name) as PropAddingHOC<{}>)
 
 export default addNamedComponentBoundary

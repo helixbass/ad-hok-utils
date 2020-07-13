@@ -1,4 +1,4 @@
-import {UnchangedProps, flowMax, addRef, addProps} from 'ad-hok'
+import {CurriedUnchangedProps, flowMax, addRef, addProps} from 'ad-hok'
 import {isEqual} from 'lodash/fp'
 
 import cleanupProps from './cleanupProps'
@@ -8,7 +8,7 @@ type AddPropIdentityStabilizationType = <
   TPropName extends keyof TProps
 >(
   propName: TPropName,
-) => UnchangedProps<TProps>
+) => CurriedUnchangedProps<TProps>
 
 const addPropIdentityStabilization: AddPropIdentityStabilizationType = (
   propName,

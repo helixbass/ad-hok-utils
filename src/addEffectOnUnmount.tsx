@@ -1,11 +1,11 @@
-import {addEffect, UnchangedProps, flowMax, addHandlers} from 'ad-hok'
+import {addEffect, CurriedUnchangedProps, flowMax, addHandlers} from 'ad-hok'
 
 import addPropTrackingRef from './addPropTrackingRef'
 import cleanupProps from './cleanupProps'
 
 type AddEffectOnUnmountType = <TProps>(
   callback: (props: TProps) => () => void,
-) => UnchangedProps<TProps>
+) => CurriedUnchangedProps<TProps>
 
 const addEffectOnUnmount: AddEffectOnUnmountType = (callback) => {
   const handlerName = 'addEffectOnUnmountHandler'

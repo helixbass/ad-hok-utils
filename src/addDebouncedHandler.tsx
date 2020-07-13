@@ -1,4 +1,4 @@
-import {addHandlers, UnchangedProps, flowMax} from 'ad-hok'
+import {addHandlers, CurriedUnchangedProps, flowMax} from 'ad-hok'
 import {debounce} from 'lodash'
 
 import addPropTrackingRef from './addPropTrackingRef'
@@ -10,7 +10,7 @@ type AddDebouncedHandlerType = <
 >(
   waitInterval: number,
   handlerPropName: TPropName,
-) => UnchangedProps<TProps>
+) => CurriedUnchangedProps<TProps>
 
 const addDebouncedHandler: AddDebouncedHandlerType = (
   waitInterval,

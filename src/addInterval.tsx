@@ -1,4 +1,4 @@
-import {UnchangedProps} from 'ad-hok'
+import {CurriedUnchangedProps} from 'ad-hok'
 import {get} from 'lodash/fp'
 
 import useInterval from './useInterval'
@@ -7,7 +7,7 @@ type AddIntervalType = <TProps>(
   callback: (props: TProps) => () => void,
   delay: number | null,
   additionalDependenciesThatShouldTriggerResettingInterval?: string[],
-) => UnchangedProps<TProps>
+) => CurriedUnchangedProps<TProps>
 
 const addInterval: AddIntervalType = (
   callback,

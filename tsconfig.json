@@ -6,7 +6,6 @@
     "outDir": "./lib",
     "strict": true,
     "jsx": "react",
-    "typeRoots": ["./types", "node_modules/@types"],
     "esModuleInterop": true,
     "keyofStringsOnly": true
   },

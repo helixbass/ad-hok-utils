@@ -1,8 +1,8 @@
-import {UnchangedProps, addEffect} from 'ad-hok'
+import {CurriedUnchangedProps, addEffect} from 'ad-hok'
 
 type AddEffectOnMountType = <TProps>(
   callback: (props: TProps) => () => void,
-) => UnchangedProps<TProps>
+) => CurriedUnchangedProps<TProps>
 
 const addEffectOnMount: AddEffectOnMountType = (callback) =>
   addEffect(callback, [])
