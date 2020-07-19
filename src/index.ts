@@ -14,3 +14,9 @@ export {default as addEffectOnUnmount} from './addEffectOnUnmount'
 export {default as addIsInitialRender} from './addIsInitialRender'
 export {default as addReducerOverProps} from './addReducerOverProps'
 export {default as addLayoutEffectOnMount} from './addLayoutEffectOnMount'
+export {default as addContextProvider} from './addContextProvider'
+export {
+  default as getContextHelpers,
+  getContextHelpersFromInitialValues,
+  toObjectKeys,
+} from './getContextHelpers'

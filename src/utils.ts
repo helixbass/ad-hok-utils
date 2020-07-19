@@ -26,3 +26,5 @@ export const mapValuesWithKey: MapValuesWithKeyType = (mapValues as any).convert
     cap: false,
   },
 )
+
+export const tuple = <T extends any[]>(...args: T): T => args
