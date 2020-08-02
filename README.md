@@ -9,6 +9,7 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
 - [Usage with Typescript](#usage-with-typescript)
 - [Helpers](#helpers)
   * [addInterval()](#addinterval)
+  * [addPropTrackingRef()](#addproptrackingref)
   * [addContextProvider()](#addcontextprovider)
   * [getContextHelpers()/getContextHelpersFromInitialValues()](#getcontexthelpersgetcontexthelpersfrominitialvalues)
   * [addExtendedHandlers()](#addextendedhandlers)
@@ -64,6 +65,30 @@ const MyComponent: FC<{name: string}> = flowMax(
   addInterval(({name}) => () => {
     console.log(`Hello again, {name}!`)
   }, 4000, ['name']),
+  ({name}) => <div>{name}</div>
+)
+```
+
+
+### `addPropTrackingRef()`
+```js
+addPropTrackingRef(
+  propName: string,
+  refPropName: string
+): Function
+```
+
+Sometimes it's useful to have a ref that always tracks the latest value of some prop. `addPropTrackingRef()` takes the name of the
+existing prop to track and the name of a [mutable ref](https://reactjs.org/docs/refs-and-the-dom.html#creating-refs) prop to add:
+
+```typescript
+const MyComponent: FC<{name: string}> = flowMax(
+  addPropTrackingRef('name', 'nameRef'),
+  addEffect(({nameRef}) => () => {
+    setTimeout(() => {
+      console.log("current name", nameRef.current)
+    }, 2000)
+  },
   ({name}) => <div>{name}</div>
 )
 ```
