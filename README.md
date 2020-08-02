@@ -8,6 +8,7 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
 - [Installation](#installation)
 - [Usage with Typescript](#usage-with-typescript)
 - [Helpers](#helpers)
+  * [addInterval()](#addinterval)
   * [addContextProvider()](#addcontextprovider)
   * [getContextHelpers()/getContextHelpersFromInitialValues()](#getcontexthelpersgetcontexthelpersfrominitialvalues)
   * [addExtendedHandlers()](#addextendedhandlers)
@@ -41,6 +42,30 @@ Ad-hok-utils ships with its own Typescript typings so by following the installat
 you should be ready to use it on a Typescript + React project
 
 ## Helpers
+
+
+
+### `addInterval()`
+```js
+addInterval(
+  callback: (props: Object) => Function,
+  delay: number | null,
+  additionalDependenciesThatShouldTriggerResettingInterval?: string[]
+): Function
+```
+
+Per [this article](https://overreacted.io/making-setinterval-declarative-with-react-hooks/) (whose `useInterval()` hook it uses under the hood), sets up an interval timer with a dynamically adjustable delay (can pause by setting delay to `null`).
+If there are additional props (other than the delay) that should trigger resetting the interval when they change, you can pass a [dependencies argument](https://github.com/helixbass/ad-hok#dependencies-arguments)-style list of prop names as the third argument
+
+```typescript
+const MyComponent: FC<{name: string}> = flowMax(
+  addInterval(({name}) => () => {
+    console.log(`Hello again, {name}!`)
+  }, 4000, ['name']),
+  ({name}) => <div>{name}</div>
+)
+```
+
 
 
 ### `addContextProvider()`
