@@ -10,6 +10,7 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
 - [Helpers](#helpers)
   * [addInterval()](#addinterval)
   * [addPropTrackingRef()](#addproptrackingref)
+  * [addPropIdentityStabilization()](#addpropidentitystabilization)
   * [addContextProvider()](#addcontextprovider)
   * [getContextHelpers()/getContextHelpersFromInitialValues()](#getcontexthelpersgetcontexthelpersfrominitialvalues)
   * [addExtendedHandlers()](#addextendedhandlers)
@@ -93,6 +94,29 @@ const MyComponent: FC<{name: string}> = flowMax(
 )
 ```
 
+
+
+### `addPropIdentityStabilization()`
+```js
+addPropIdentityStabilization(
+  propName: string
+): Function
+```
+
+Typically when a prop's value is effectively unchanged you want its identity to stay stable (so that eg other things using it as a
+dependency don't retrigger). But when the prop's value is coming from somewhere you don't control and may be changing identity even
+if it's still the same value according to an [`isEqual()`](https://lodash.com/docs/4.17.15#isEqual)-style comparison, you can use
+`addPropIdentityStabilization()` to keep its identity stable unless its value has actually changed:
+
+```typescript
+const MyComponent: FC<{someData: SomeData}> = flowMax(
+  addPropIdentityStabilization('someData'),
+  addProps(({someData}) => ({
+    foo: someExpensiveComputation(someData),
+  }), ['someData']),
+  ({foo}) => <div>{foo}</div>
+)
+```
 
 
 ### `addContextProvider()`
