@@ -24,7 +24,9 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
   * [removeProps()](#removeprops)
   * [cleanupProps()](#cleanupprops)
   * [addNamedComponentBoundary()](#addnamedcomponentboundary)
-  * [addComponentBoundary()](#addcomponentboundary)
+  * [addComponentBoundary()](#addcomponentboundary)'
+- [Help / Contributions / Feedback](#help--contributions--feedback)
+- [License](#license)
 
 
 
@@ -591,7 +593,15 @@ const MySlowComponent: FC<Props> = flowMax(
 ```
 
 
+## Help / Contributions / Feedback
 
+Please file an issue or submit a PR with any questions/suggestions
+
+
+
+## License
+
+MIT
 
 
 
