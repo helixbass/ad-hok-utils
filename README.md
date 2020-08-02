@@ -10,12 +10,14 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
 - [Helpers](#helpers)
   * [addContextProvider()](#addcontextprovider)
   * [getContextHelpers()/getContextHelpersFromInitialValues()](#getcontexthelpersgetcontexthelpersfrominitialvalues)
+  * [addExtendedHandlers()](#addextendedhandlers)
   * [addEffectOnMount()](#addeffectonmount)
   * [addLayoutEffectOnMount()](#addlayouteffectonmount)
   * [addEffectOnUnmount()](#addeffectonunmount)
   * [addIsInitialRender()](#addisinitialrender)
   * [addNamedComponentBoundary()](#addnamedcomponentboundary)
   * [addComponentBoundary()](#addcomponentboundary)
+  
 
 
 
@@ -146,6 +148,32 @@ const MyChildComponent: FC = flowMax(
 )
 ```
 
+
+### `addExtendedHandlers()`
+```js
+addExtendedHandlers(
+  handlerCreators: {
+    [handlerName: string]: (props: Object) => Function
+  }
+): Function
+```
+
+Extends existing handler props with additional behavior. When the handler is called, runs the existing handler first and then
+the extending handler. Has the same signature as [`addHandlers()`](https://github.com/helixbass/ad-hok#addhandlers)
+
+For example, you may want to perform additional actions on top of an incoming `onClick` handler when a button is clicked:
+```typescript
+import {addExtendedHandlers} from 'ad-hok-utils'
+
+const MyComponent: FC<{onClick: (message: string) => void}> = flowMax(
+  addExtendedHandlers({
+    onClick: () => (message: string) => {
+      console.log('clicked', message)
+    },
+  }),
+  ({onClick}) => <button onClick={() => onClick('hello')}>say hello</button>
+)
+```
 
 
 ### `addEffectOnMount()`
