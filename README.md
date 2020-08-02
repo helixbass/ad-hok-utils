@@ -14,6 +14,7 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
   * [addLayoutEffectOnMount()](#addlayouteffectonmount)
   * [addEffectOnUnmount()](#addeffectonunmount)
   * [addIsInitialRender()](#addisinitialrender)
+  * [addNamedComponentBoundary()](#addnamedcomponentboundary)
 
 
 
@@ -224,6 +225,38 @@ import {addIsInitialRender} from 'ad-hok-utils'
 const MyComponent: FC = flowMax(
   addIsInitialRender,
   ({isInitialRender}) => <div>{isInitialRender ? 'first' : 'subsequent'}</div>
+)
+```
+
+
+### `addNamedComponentBoundary()`
+```js
+addNamedComponentBoundary(
+  displayName: string
+): Function
+```
+
+Accepts a display name string and creates an internal component boundary with that display name (ad-hok can create and mount
+additional components "under the hood" of your single `flowMax()` component, this is part of the "magic" of how eg `addWrapper()`
+or `branch()` works)
+
+Useful when doing fine-grained performance tuning in the React profiler. For example, if you see in the flamechart that a certain
+component is taking a long time to render, you can add a bunch of `addNamedComponentBoundary()`'s to get a "line-by-line" breakdown
+of what's slow:
+
+```typescript
+import {addNamedComponentBoundary} from 'ad-hok-utils'
+
+const MySlowComponent: FC<Props> = flowMax(
+  addProps((props) => ({
+    foo: doSomethingMaybeExpensive(props),
+  }),
+  addNamedComponentBoundary('post-foo'),
+  addProps(({foo}) => ({
+    bar: doSomethingElseMaybeExpensive(foo),
+  }),
+  addNamedComponentBoundary('post-bar'),
+  ({bar}) => <div>{bar}</div>
 )
 ```
 
