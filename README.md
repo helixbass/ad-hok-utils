@@ -11,6 +11,8 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
   * [addInterval()](#addinterval)
   * [addPropTrackingRef()](#addproptrackingref)
   * [addPropIdentityStabilization()](#addpropidentitystabilization)
+  * [addDebouncedHandler()](#adddebouncedhandler)
+  * [addDebouncedCopy()](#adddebouncedcopy)
   * [addContextProvider()](#addcontextprovider)
   * [getContextHelpers()/getContextHelpersFromInitialValues()](#getcontexthelpersgetcontexthelpersfrominitialvalues)
   * [addExtendedHandlers()](#addextendedhandlers)
@@ -116,6 +118,51 @@ const MyComponent: FC<{someData: SomeData}> = flowMax(
     foo: someExpensiveComputation(someData),
   }), ['someData']),
   ({foo}) => <div>{foo}</div>
+)
+```
+
+
+
+### `addDebouncedHandler()`
+```js
+addDebouncedHandler(
+  waitInterval: number,
+  handlerPropName: string
+): Function
+```
+
+Accepts a debouncing wait interval (in milliseconds) and an existing handler prop name and "replaces" that handler prop with a
+debounced version of the handler:
+
+```typescript
+const MyComponent: FC<{onChange: (value: string) => void}> = flowMax(
+  addDebouncedHandler(300, 'onChange'),
+  ({onChange}) => <Search onChange={onChange} />
+)
+```
+
+
+
+### `addDebouncedCopy()`
+```js
+addDebouncedCopy(
+  waitInterval: number,
+  propName: string,
+  debouncedPropName: string
+): Function
+```
+
+In the hooks/ad-hok world of triggering things based on dependencies changing, it's a helpful concept (more helpful than debouncing
+handlers in my opinion) to debounce prop values. `addDebouncedCopy()` takes a debouncing wait interval and an existing
+prop name and exposes a debounced version of that prop value under another specified prop name:
+
+```typescript
+const MyComponent: FC<{foo: string}> = flowMax(
+  addDebouncedCopy(300, 'foo', 'fooDebounced'),
+  addEffect(({fooDebounced}) => () => {
+    console.log('foo debounced', fooDebounced)
+  }, ['fooDebounced']),
+  ({foo}) => <div>the "live" value of foo is: {foo}</div>
 )
 ```
 
