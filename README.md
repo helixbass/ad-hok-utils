@@ -11,6 +11,8 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
   * [addEffectOnMount()](#addeffectonmount)
   * [addLayoutEffectOnMount()](#addlayouteffectonmount)
   * [addEffectOnUnmount()](#addeffectonunmount)
+  * [addIsInitialRender()](#addisinitialrender)
+
 
 
 ## Installation
@@ -89,6 +91,21 @@ const MyComponent: FC<{name: string}> = flowMax(
     console.log(`Final name: ${name}`)
   }),
   ({name}) => <div>{name}</div>
+)
+```
+
+
+### `addIsInitialRender()`
+```js
+addIsInitialRender: Function
+```
+
+Exposes an `isInitialRender` boolean prop that will only be true during the first render of a component
+
+```typescript
+const MyComponent: FC = flowMax(
+  addIsInitialRender,
+  ({isInitialRender}) => <div>{isInitialRender ? 'first' : 'subsequent'}</div>
 )
 ```
 
