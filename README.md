@@ -18,11 +18,12 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
   * [addLayoutEffectOnMount()](#addlayouteffectonmount)
   * [addEffectOnUnmount()](#addeffectonunmount)
   * [addIsInitialRender()](#addisinitialrender)
+  * [addReducerOverProps()](#addreduceroverprops)
   * [removeProps()](#removeprops)
   * [cleanupProps()](#cleanupprops)
   * [addNamedComponentBoundary()](#addnamedcomponentboundary)
   * [addComponentBoundary()](#addcomponentboundary)
-  
+
 
 
 
@@ -331,6 +332,53 @@ import {addIsInitialRender} from 'ad-hok-utils'
 const MyComponent: FC = flowMax(
   addIsInitialRender,
   ({isInitialRender}) => <div>{isInitialRender ? 'first' : 'subsequent'}</div>
+)
+```
+
+
+
+### `addReducerOverProps()`
+```js
+addReducerOverProps: (
+  reducer: (props: Object) => ReducerFunction,
+  initialState: Object
+): Function
+```
+
+As mentioned in the ad-hok [`addReducer()`](https://github.com/helixbass/ad-hok#addreducer) docs, `addReducer()` only wraps a
+"static reducer" (that doesn't have visibility of props). So you can use `addReducerOverProps()` to wrap a `useReducer()`-style
+reducer that is dynamic with respect to props. Like `addReducer()`, it exposes the `dispatch` handler and the top-level reducer
+state object properties as props:
+
+```typescript
+import {addReducerOverProps} from 'ad-hok-utils'
+
+interface ReducerState {
+  y: number
+}
+
+type ReducerAction =
+  | {type: 'incrementByX'}
+
+const MyComponent: FC<{x: number}> = flowMax(
+  addReducerOverProps(
+    ({x}) => (state: ReducerState, action: ReducerAction) => {
+      switch (action.type) {
+        case 'incrementByX':
+          return {
+            ...state,
+            y: state.y + x
+          }
+        }
+      }
+    },
+    {y: 1}
+  ),
+  ({y, dispatch}) =>
+    <div>
+      <p>{y}</p>
+      <button onClick={() => dispatch({type: 'incrementByX'})}>increment by x</button>
+    </div>
 )
 ```
 
