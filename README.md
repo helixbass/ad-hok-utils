@@ -9,7 +9,7 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
 - [Usage with Typescript](#usage-with-typescript)
 - [Helpers](#helpers)
   * [addContextProvider()](#addcontextprovider)
-  * [getContextHelpers()/getContextHelpersFromInitialValues()](#getcontexthelpers-getcontexthelpersfrominitialvalues)
+  * [getContextHelpers()/getContextHelpersFromInitialValues()](#getcontexthelpersgetcontexthelpersfrominitialvalues)
   * [addEffectOnMount()](#addeffectonmount)
   * [addLayoutEffectOnMount()](#addlayouteffectonmount)
   * [addEffectOnUnmount()](#addeffectonunmount)
@@ -47,7 +47,7 @@ addContextProvider(
 ```
 
 Accepts a React context object and an existing prop name which is expected to contain the value to
-provide for that context
+provide for that context. Renders a context provider "under the hood"
 
 ```typescript
 const NameContext = React.createContext<{name: string}>({name: ''})
@@ -61,7 +61,7 @@ const MyComponent: FC<{name: string}> = flowMax(
 )
 ```
 
-See [`getContextHelpers()`](#getcontexthelpers-getcontexthelpersfrominitialvalues) for a higher-level set of context helpers
+See [`getContextHelpers()`](#getcontexthelpersgetcontexthelpersfrominitialvalues) for a higher-level set of context helpers
 
 
 ### `getContextHelpers()`/`getContextHelpersFromInitialValues()`
@@ -83,7 +83,7 @@ The "contract" is that the generated context provider expects there to be existi
 And the generated context consumer will "spread" those context value keys into top-level props
 
 If you don't want to bother with supplying a (correctly typed, in the case of Typescript) set of initial values because the context
-should only be consumed inside of a mounted context provider, then use `getContextHelpers()`:
+should only ever be consumed inside of a mounted context provider, then use `getContextHelpers()`:
 ```typescript
 import {getContextHelpers, toObjectKeys} from 'ad-hok-utils'
 
@@ -103,8 +103,8 @@ const MyChildComponent: FC = flowMax(
   ({name}) => <div>Hello {name}</div>
 )
 ```
-Note the use of the `toObjectKeys()` helper to provide the list of keys/incoming prop names as a "skeleton object" (which makes the
-Typescript typing stronger than passing an actual array of keys would). You certainly don't have to use `toObjectKeys()` and could
+Note the use of the `toObjectKeys()` helper to provide the list of keys/incoming prop names as a "skeleton object" (which improves the
+Typescript typing compared to passing an actual array of keys). You certainly don't have to use `toObjectKeys()` and could
 instead manually provide a "skeleton" object literal with the expected keys (eg `{name: undefined}`), but it's discouraged because
 that tends to look like initial context values when it fact it isn't
 
@@ -120,6 +120,29 @@ const {
 } = getContextHelpers<{name: string}>(toObjectKeys(['name']))
 ```
 
+#### `getContextHelpersFromInitialValues()`
+
+If you do want to provide consumable initial values for your generated context, instead use `getContextHelpersFromInitialValues()`:
+```typescript
+import {getContextHelpersFromInitialValues} from 'ad-hok-utils'
+
+const [addNameContextProvider, addNameContext] = getContextHelpersFromInitialValues({name: ''})
+
+const MyParentComponent: FC = flowMax(
+  addProps({
+    name: 'Jill',
+  }),
+  addNameContextProvider,
+  () =>
+    <MyChildComponent />
+)
+
+const MyChildComponent: FC = flowMax(
+  addNameContext,
+  ({name}) => <div>Hello {name}</div>
+)
+```
+
 
 
 ### `addEffectOnMount()`
@@ -133,6 +156,8 @@ Accepts an effect callback to be run only once on component mount.
 Thin convenience wrapper around [`addEffect()`](https://github.com/helixbass/ad-hok#addeffect)
 
 ```typescript
+import {addEffectOnMount} from 'ad-hok-utils'
+
 const MyComponent: FC<{name: string}> = flowMax(
   addEffectOnMount(({name}) => () => {
     console.log(`Initial name: ${name}`)
@@ -153,6 +178,8 @@ Accepts an effect callback to be run only once as a [layout effect](https://reac
 Thin convenience wrapper around [`addLayoutEffect()`](https://github.com/helixbass/ad-hok#addlayouteffect)
 
 ```typescript
+import {addLayoutEffectOnMount} from 'ad-hok-utils'
+
 const MyComponent: FC<{name: string}> = flowMax(
   addLayoutEffectOnMount(({name}) => () => {
     console.log(`Initial name: ${name}`)
@@ -173,6 +200,8 @@ Accepts an effect callback to be run only once on component unmount.
 Thin convenience wrapper around [`addEffect()`](https://github.com/helixbass/ad-hok#addeffect)
 
 ```typescript
+import {addEffectOnUnmount} from 'ad-hok-utils'
+
 const MyComponent: FC<{name: string}> = flowMax(
   addEffectOnUnmount(({name}) => () => {
     console.log(`Final name: ${name}`)
@@ -190,6 +219,8 @@ addIsInitialRender: Function
 Exposes an `isInitialRender` boolean prop that will only be true during the first render of a component
 
 ```typescript
+import {addIsInitialRender} from 'ad-hok-utils'
+
 const MyComponent: FC = flowMax(
   addIsInitialRender,
   ({isInitialRender}) => <div>{isInitialRender ? 'first' : 'subsequent'}</div>
