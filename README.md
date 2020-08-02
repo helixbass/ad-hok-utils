@@ -9,6 +9,9 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
 - [Usage with Typescript](#usage-with-typescript)
 - [Helpers](#helpers)
   * [addEffectOnMount()](#addeffectonmount)
+  * [addLayoutEffectOnMount()](#addlayouteffectonmount)
+  * [addEffectOnUnmount()](#addeffectonunmount)
+
 
 ## Installation
 
@@ -48,4 +51,49 @@ const MyComponent: FC<{name: string}> = flowMax(
   ({name}) => <div>{name}</div>
 )
 ```
+
+
+### `addLayoutEffectOnMount()`
+```js
+addLayoutEffectOnMount(
+  callback: (props: Object) => Function
+): Function
+```
+
+Accepts an effect callback to be run only once as a [layout effect](https://reactjs.org/docs/hooks-reference.html#uselayouteffect) on component mount.
+Thin convenience wrapper around [`addLayoutEffect()`](https://github.com/helixbass/ad-hok#addlayouteffect)
+
+```typescript
+const MyComponent: FC<{name: string}> = flowMax(
+  addLayoutEffectOnMount(({name}) => () => {
+    console.log(`Initial name: ${name}`)
+  }),
+  ({name}) => <div>{name}</div>
+)
+```
+
+
+### `addEffectOnUnmount()`
+```js
+addEffectOnUnmount(
+  callback: (props: Object) => Function
+): Function
+```
+
+Accepts an effect callback to be run only once on component unmount.
+Thin convenience wrapper around [`addEffect()`](https://github.com/helixbass/ad-hok#addeffect)
+
+```typescript
+const MyComponent: FC<{name: string}> = flowMax(
+  addEffectOnUnmount(({name}) => () => {
+    console.log(`Final name: ${name}`)
+  }),
+  ({name}) => <div>{name}</div>
+)
+```
+
+
+
+
+
 
