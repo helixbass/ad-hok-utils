@@ -16,6 +16,8 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
   * [addLayoutEffectOnMount()](#addlayouteffectonmount)
   * [addEffectOnUnmount()](#addeffectonunmount)
   * [addIsInitialRender()](#addisinitialrender)
+  * [removeProps()](#removeprops)
+  * [cleanupProps()](#cleanupprops)
   * [addNamedComponentBoundary()](#addnamedcomponentboundary)
   * [addComponentBoundary()](#addcomponentboundary)
   
@@ -282,6 +284,109 @@ const MyComponent: FC = flowMax(
   ({isInitialRender}) => <div>{isInitialRender ? 'first' : 'subsequent'}</div>
 )
 ```
+
+
+
+### `removeProps()`
+```js
+removeProps: (
+  propNames: string | string[]
+): Function
+```
+
+Takes an array of prop names or a single prop name to remove from the props object
+
+Often it doesn't matter if there are extra props "floating around" on the props object, but one example of where it does is
+when you're passing all props through to an underlying DOM element (otherwise you can get unrecognized DOM property warnings):
+
+```typescript
+import {removeProps} from 'ad-hok-utils'
+
+const MyForm: FC<Props> = flowMax(
+  addProps({
+    foo: 'foo'
+  }),
+  addProps(({foo}) => ({
+    testId: foo,
+  }),
+  removeProps(['foo']),
+  ({testId, ...props}) => <form data-testid={testId} {...props} />
+)
+```
+
+
+### `cleanupProps()`
+```js
+cleanupProps: (
+  propNames: string | string[]
+): Function
+```
+
+Takes an array of prop names or a single prop name to remove from the props object
+
+At runtime `cleanupProps()` behaves identically to `removeProps()`, the difference is just how it's typed for Typescript.
+`cleanupProps()` is meant to be used inside ad-hok helper definition chains when you want to "clean up after yourself" and
+not expose props that aren't part of the advertised props interface of the helper - the issue with using `removeProps()` for
+this is that then the helper's type would have to declare that it `Omit`'s the removed props, which then tends to "infect" the
+types of other chains that consume that helper. `cleanupProps()`, on the other hand, pretends (from a typing perspective) that those
+props are still there:
+
+```typescript
+import {cleanupProps} from 'ad-hok-utils'
+
+type AddBar = SimplePropsAdder<{bar: number}>
+
+const addBar: AddBar = flowMax(
+  addProps({
+    _foo: 3
+  }),
+  addProps(({_foo}) => ({
+    bar: _foo + 2,
+  })),
+  cleanupProps(['_foo']),
+)
+
+const MyComponent: FC = flowMax(
+  addBar,
+  ({bar}) => <div>{bar}</div>
+)
+```
+The use of `cleanupProps()` is dangerous - because it's "silently" removing those helper-internal props, if one of those prop names
+actually also existed in an outer consuming chain, it could lead to Typescript thinking that a value is present that actually isn't:
+```typescript
+import {cleanupProps} from 'ad-hok-utils'
+
+type AddBar = SimplePropsAdder<{bar: number}>
+
+const addBarDangerous: AddBar = flowMax(
+  addProps({
+    foo: 3
+  }),
+  addProps(({foo}) => ({
+    bar: foo + 2,
+  })),
+  cleanupProps(['foo']),
+)
+
+const MyComponent: FC = flowMax(
+  addProps({
+    foo: 'abc',
+  }),
+  addBar,
+  addProps(({foo}) => ({
+    fooUppercase: foo.toUpperCase() // uh-oh, this will crash at runtime
+  })),
+  ({fooUppercase, bar}) => <div>{fooUppercase} {bar}</div>
+)
+```
+So notice the use of the leading underscore (`_foo`) in the first example - generally (regardless of whether you're going to "clean
+up after yourself" and remove the props or not) it's good practice to try not to use prop names inside helpers that might potentially
+clash with the names of preexisting props
+
+And the only place it's recommended to use `cleanupProps()` is as the last step in a helper chain.
+[`eslint-plugin-ad-hok`](https://github.com/helixbass/eslint-plugin-ad-hok) has a `cleanupprops-last` rule (enabled by its
+`recommended-typescript` setting) that enforces this
+
 
 
 ### `addNamedComponentBoundary()`
