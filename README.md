@@ -31,6 +31,7 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
   * [cleanupProps()](#cleanupprops)
   * [declarePropTypesNarrowing()](#declareproptypesnarrowing)
   * [declarePropTypesForcing()](#declareproptypesforcing)
+  * [declarePropTypesUnrecognized()](#declareproptypesunrecognized)
 - [Help / Contributions / Feedback](#help--contributions--feedback)
 - [License](#license)
 
@@ -816,6 +817,41 @@ const MyComponent: FC<{code: number}> = flowMax(
   // So we can insist on the new type:
   declarePropTypesForcing<{code: string | number}>(),
   ({code}) => <div>{isString(code) ? code.toUpperCase() : code + 2}</div>
+)
+```
+
+
+### `declarePropTypesUnrecognized()`
+```js
+declarePropTypesUnrecognized: () => Function
+```
+
+When "you know better than Typescript" that certain props are present that it doesn't know about, you can use `declarePropTypesUnrecognized()`
+to instruct Typescript about the prop types. This could happen if a helper adds props to the chain that it doesn't declare and you need to get
+rid of them to avoid unknown DOM attribute warnings:
+
+```typescript
+import {declarePropTypesUnrecognized} from 'ad-hok-utils'
+import {SimplePropsAdder} from 'ad-hok'
+
+// doesn't declare that it also adds `prefix` to the chain
+type AddName = SimplePropsAdder<{name: string}>
+
+const addName: AddName = flowMax(
+  addProps({
+    prefix: 'Mr.',
+  }),
+  addProps(({prefix}) => ({
+    name: `${prefix} Potatohead`
+  })),
+)
+
+const MyComponent: FC<{className?: string}> = flowMax(
+  addName,
+  declarePropTypesUnrecognized<{prefix: string}>(),
+  // now we can do removeProps() (otherwise Typescript would have complained):
+  removeProps(['prefix']),
+  ({name, ...props}) => <div {...props}>{name}</div>
 )
 ```
 
