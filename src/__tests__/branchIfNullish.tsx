@@ -4,7 +4,7 @@ import '@testing-library/jest-dom'
 import '@testing-library/jest-dom/extend-expect'
 import {flowMax, addProps} from 'ad-hok'
 
-import {branchIfNullish, suppressUnlessProp} from '..'
+import {branchIfNullish} from '..'
 
 describe('branchIfNullish()', () => {
   test('abort rendering when prop is undefined/null', () => {
@@ -82,31 +82,5 @@ describe('branchIfNullish()', () => {
     expect(screen.queryByTestId(testId)).toBeNull()
     rerender(<Component x={undefined} testId={testId} />)
     expect(screen.queryByTestId(testId)).toBeNull()
-  })
-  test('aliased as suppressUnlessProp()', () => {
-    interface Props {
-      x?: number | null
-      testId: string
-    }
-
-    const Component: FC<Props> = flowMax(
-      suppressUnlessProp('x'),
-      addProps(({x}) => ({
-        x: x + 3,
-      })),
-      ({x, testId}) => <div data-testid={testId}>{x}</div>,
-    )
-
-    const testId = 'suppress-unless-prop'
-    const {rerender} = render(<Component testId={testId} />)
-    expect(screen.queryByTestId(testId)).toBeNull()
-    rerender(<Component x={2} testId={testId} />)
-    expect(screen.getByTestId(testId)).toHaveTextContent('5')
-    rerender(<Component x={null} testId={testId} />)
-    expect(screen.queryByTestId(testId)).toBeNull()
-    rerender(<Component x={undefined} testId={testId} />)
-    expect(screen.queryByTestId(testId)).toBeNull()
-    rerender(<Component x={0} testId={testId} />)
-    expect(screen.getByTestId(testId)).toHaveTextContent('3')
   })
 })
