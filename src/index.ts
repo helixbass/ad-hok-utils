@@ -20,3 +20,4 @@ export {
   getContextHelpersFromInitialValues,
   toObjectKeys,
 } from './getContextHelpers'
+export {default as declarePropTypesNarrowing} from './declarePropTypesNarrowing'
