@@ -15,6 +15,7 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
   * [addDebouncedCopy()](#adddebouncedcopy)
   * [addContextProvider()](#addcontextprovider)
   * [getContextHelpers()/getContextHelpersFromInitialValues()](#getcontexthelpersgetcontexthelpersfrominitialvalues)
+  * [branchIfNullish()](#branchifnullish)
   * [addExtendedHandlers()](#addextendedhandlers)
   * [addEffectOnMount()](#addeffectonmount)
   * [addLayoutEffectOnMount()](#addlayouteffectonmount)
@@ -272,6 +273,57 @@ const MyChildComponent: FC = flowMax(
   addNameContext,
   ({name}) => <div>Hello {name}</div>
 )
+```
+
+
+### `branchIfNullish()`
+```js
+branchIfNullish(
+  propNames: string | string[]
+  opts?: {
+    returns?: (props: Object) => ReactElement
+  }
+): Function
+```
+
+Encapsulates the common pattern of "aborting" the chain (ie `branch()`'ing to `renderNothing()` or to `returns()` some JSX elements)
+if any of the given props is nullish (ie `null` or `undefined`). By default it renders `null`, or you can supply a `returns` option
+to specify what to render
+
+For Typescript, it'll automatically narrow the types of the given props to be non-nullish after this step in the chain
+
+```typescript
+import {branchIfNullish} from 'ad-hok-utils'
+
+const MyComponent: FC<{name?: string | null}> = flowMax(
+  branchIfNullish('name'),
+  addProps(({name}) => ({
+    nameUppercase: name.toUpperCase(),
+  })),
+  ({nameUppercase}) => <div>{nameUppercase}</div>
+)
+
+<MyComponent /> // renders null
+
+<MyComponent name={null} /> // renders null
+
+<MyComponent name="Bert" /> // renders "BERT"
+
+// or, specify what to render when aborting:
+
+const MyComponent: FC<{name?: string | null, testId: string}> = flowMax(
+  branchIfNullish('name', {returns: ({testId}) => <div data-testid={testId}>aborted</div>}),
+  addProps(({name}) => ({
+    nameUppercase: name.toUpperCase(),
+  })),
+  ({nameUppercase, testId}) => <div data-testid={testId}>{nameUppercase}</div>
+)
+
+<MyComponent /> // renders "aborted"
+
+<MyComponent name={null} /> // renders "aborted"
+
+<MyComponent name="Bert" /> // renders "BERT"
 ```
 
 
