@@ -25,9 +25,10 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
   * [addIsInitialRender()](#addisinitialrender)
   * [addReducerOverProps()](#addreduceroverprops)
   * [removeProps()](#removeprops)
-  * [cleanupProps()](#cleanupprops)
   * [addNamedComponentBoundary()](#addnamedcomponentboundary)
-  * [addComponentBoundary()](#addcomponentboundary)'
+  * [addComponentBoundary()](#addcomponentboundary)
+- [Typescript-specific helpers](#typescript-specific-helpers)
+  * [cleanupProps()](#cleanupprops)
 - [Help / Contributions / Feedback](#help--contributions--feedback)
 - [License](#license)
 
@@ -627,6 +628,67 @@ const MyForm: FC<Props> = flowMax(
 ```
 
 
+### `addNamedComponentBoundary()`
+```js
+addNamedComponentBoundary(
+  displayName: string
+): Function
+```
+
+Accepts a display name string and creates an internal component boundary with that display name (ad-hok can create and mount
+additional components "under the hood" of your single `flowMax()` component, this is part of the "magic" of how eg `addWrapper()`
+or `branch()` works)
+
+Useful when doing fine-grained performance tuning in the React profiler. For example, if you see in the flamechart that a certain
+component is taking a long time to render, you can temporarily add a bunch of `addNamedComponentBoundary()`'s to get a "line-by-line" breakdown
+in the flamechart of what's slow:
+
+```typescript
+import {addNamedComponentBoundary} from 'ad-hok-utils'
+
+const MySlowComponent: FC<Props> = flowMax(
+  addProps((props) => ({
+    foo: doSomethingMaybeExpensive(props),
+  }),
+  addNamedComponentBoundary('post-foo'),
+  addProps(({foo}) => ({
+    bar: doSomethingElseMaybeExpensive(foo),
+  }),
+  addNamedComponentBoundary('post-bar'),
+  ({bar}) => <div>{bar}</div>
+)
+```
+
+
+
+### `addComponentBoundary()`
+```js
+addComponentBoundary: Function
+```
+
+Creates an "anonymous" internal component boundary (see description of [`addNamedComponentBoundary()`](#addnamedcomponentboundary) above)
+
+Like `addNamedComponentBoundary()`, can be useful when doing performance tuning. For example, if your component "wakes up" at a certain
+point due to a context value changing, you may want to impose a component boundary right before that point in the chain to avoid re-running
+the potentially expensive earlier steps in the chain:
+
+```typescript
+import {addComponentBoundary} from 'ad-hok-utils'
+
+const MySlowComponent: FC<Props> = flowMax(
+  addProps((props) => ({
+    foo: doSomethingMaybeExpensive(props),
+  }),
+  addComponentBoundary,
+  addContext(SomeContext, 'contextValue'),
+  ({contextValue: {foo}}) => <div>{foo}</div>
+)
+```
+
+
+## Typescript-specific helpers
+
+
 ### `cleanupProps()`
 ```js
 cleanupProps: (
@@ -700,63 +762,6 @@ And the only place it's recommended to use `cleanupProps()` is as the last step 
 `recommended-typescript` setting) that enforces this
 
 
-
-### `addNamedComponentBoundary()`
-```js
-addNamedComponentBoundary(
-  displayName: string
-): Function
-```
-
-Accepts a display name string and creates an internal component boundary with that display name (ad-hok can create and mount
-additional components "under the hood" of your single `flowMax()` component, this is part of the "magic" of how eg `addWrapper()`
-or `branch()` works)
-
-Useful when doing fine-grained performance tuning in the React profiler. For example, if you see in the flamechart that a certain
-component is taking a long time to render, you can temporarily add a bunch of `addNamedComponentBoundary()`'s to get a "line-by-line" breakdown
-in the flamechart of what's slow:
-
-```typescript
-import {addNamedComponentBoundary} from 'ad-hok-utils'
-
-const MySlowComponent: FC<Props> = flowMax(
-  addProps((props) => ({
-    foo: doSomethingMaybeExpensive(props),
-  }),
-  addNamedComponentBoundary('post-foo'),
-  addProps(({foo}) => ({
-    bar: doSomethingElseMaybeExpensive(foo),
-  }),
-  addNamedComponentBoundary('post-bar'),
-  ({bar}) => <div>{bar}</div>
-)
-```
-
-
-
-### `addComponentBoundary()`
-```js
-addComponentBoundary: Function
-```
-
-Creates an "anonymous" internal component boundary (see description of [`addNamedComponentBoundary()`](#addnamedcomponentboundary) above)
-
-Like `addNamedComponentBoundary()`, can be useful when doing performance tuning. For example, if your component "wakes up" at a certain
-point due to a context value changing, you may want to impose a component boundary right before that point in the chain to avoid re-running
-the potentially expensive earlier steps in the chain:
-
-```typescript
-import {addComponentBoundary} from 'ad-hok-utils'
-
-const MySlowComponent: FC<Props> = flowMax(
-  addProps((props) => ({
-    foo: doSomethingMaybeExpensive(props),
-  }),
-  addComponentBoundary,
-  addContext(SomeContext, 'contextValue'),
-  ({contextValue: {foo}}) => <div>{foo}</div>
-)
-```
 
 
 ## Help / Contributions / Feedback
