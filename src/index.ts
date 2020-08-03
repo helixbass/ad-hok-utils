@@ -21,3 +21,4 @@ export {
   toObjectKeys,
 } from './getContextHelpers'
 export {default as declarePropTypesNarrowing} from './declarePropTypesNarrowing'
+export {default as declarePropTypesForcing} from './declarePropTypesForcing'
