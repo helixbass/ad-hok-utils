@@ -30,6 +30,7 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
 - [Typescript-specific helpers](#typescript-specific-helpers)
   * [cleanupProps()](#cleanupprops)
   * [declarePropTypesNarrowing()](#declareproptypesnarrowing)
+  * [declarePropTypesForcing()](#declareproptypesforcing)
 - [Help / Contributions / Feedback](#help--contributions--feedback)
 - [License](#license)
 
@@ -789,6 +790,32 @@ const MyComponent: FC<{item: Item}> = flowMax(
     nameUppercase: name.toUpperCase(),
   })),
   ({nameUppercase}) => <div>{nameUppercase}</div>
+)
+```
+
+
+### `declarePropTypesForcing()`
+```js
+declarePropTypesForcing: () => Function
+```
+
+When "you know better than Typescript" that a given existing prop type is different than what it thinks (in a way that's not strictly
+narrowing or loosening relative to what it thinks), you can use `declarePropTypesForcing()`
+to instruct Typescript about the prop types. This could happen if you decide to "reuse" an existing prop name with an incompatible type
+(in general that's not recommended though, as it tends to be confusing to both the reader and Typescript):
+
+```typescript
+import {declarePropTypesForcing} from 'ad-hok-utils'
+
+const MyComponent: FC<{code: number}> = flowMax(
+  addProps(({code}) => ({
+    code: code === 1 ? 'abc' : code,
+  })),
+  // At this point Typescript thinks the type of `code` is `number` because
+  // ad-hok `&`'s together its existing type (`number`) and the new type (`string | number`).
+  // So we can insist on the new type:
+  declarePropTypesForcing<{code: string | number}>(),
+  ({code}) => <div>{isString(code) ? code.toUpperCase() : code + 2}</div>
 )
 ```
 
