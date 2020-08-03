@@ -32,6 +32,7 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
   * [declarePropTypesNarrowing()](#declareproptypesnarrowing)
   * [declarePropTypesForcing()](#declareproptypesforcing)
   * [declarePropTypesUnrecognized()](#declareproptypesunrecognized)
+  * [declarePropsNonNullish()](#declarepropsnonnullish)
 - [Help / Contributions / Feedback](#help--contributions--feedback)
 - [License](#license)
 
@@ -852,6 +853,32 @@ const MyComponent: FC<{className?: string}> = flowMax(
   // now we can do removeProps() (otherwise Typescript would have complained):
   removeProps(['prefix']),
   ({name, ...props}) => <div {...props}>{name}</div>
+)
+```
+
+
+
+### `declarePropsNonNullish()`
+```js
+declarePropsNonNullish: (
+  propNames: string | string[]
+) => Function
+```
+
+When "you know better than Typescript" that certain props are non-nullish (ie not `null` or `undefined` but otherwise the type that it thinks),
+you can use `declarePropsNonNullish()` to instruct Typescript about the prop types. This could also be accomplished using
+[`declarePropTypesNarrowing()`](#declareproptypesnarrowing) so is effectively a shorthand
+
+```typescript
+import {declarePropsNonNullish} from 'ad-hok-utils'
+
+const MyComponent: FC<{name?: string | null}> = flowMax(
+  branch(({name}) => name == null || name === 'Bert', renderNothing()),
+  declarePropsNonNullish('name'),
+  addProps(({name}) => ({
+    nameUppercase: name.toUpperCase(),
+  }),
+  ({nameUppercase}) => <div>{nameUppercase}</div>
 )
 ```
 
