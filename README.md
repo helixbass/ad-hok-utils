@@ -29,6 +29,7 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
   * [addComponentBoundary()](#addcomponentboundary)
 - [Typescript-specific helpers](#typescript-specific-helpers)
   * [cleanupProps()](#cleanupprops)
+  * [declarePropTypesNarrowing()](#declareproptypesnarrowing)
 - [Help / Contributions / Feedback](#help--contributions--feedback)
 - [License](#license)
 
@@ -761,6 +762,35 @@ And the only place it's recommended to use `cleanupProps()` is as the last step 
 [`eslint-plugin-ad-hok`](https://github.com/helixbass/eslint-plugin-ad-hok) has a `cleanupprops-last` rule (enabled by its
 `recommended-typescript` setting) that enforces this
 
+
+
+### `declarePropTypesNarrowing()`
+```js
+declarePropTypesNarrowing: () => Function
+```
+
+When "you know better than Typescript" that a given existing prop type can be refined/narrowed, you can use `declarePropTypesNarrowing()`
+to instruct Typescript about the prop types. This could come in handy eg after a `branch()`
+(though prefer [`branchIfNullish()`](#branchifnullish)/[`branchIfFalsy()`](#branchiffalsy)/[`branchIfEmpty()`](#branchifempty) if they
+cover your branch condition, since they do the prop type-narrowing for you):
+
+```typescript
+import {declarePropTypesNarrowing} from 'ad-hok-utils'
+
+interface Item {
+  id: string
+  name?: string
+}
+
+const MyComponent: FC<{item: Item}> = flowMax(
+  branch(({item: {name}}) => !name, renderNothing()),
+  declarePropTypesNarrowing<{item: Item & {name: string}}>(),
+  addProps(({item: {name}}) => ({
+    nameUppercase: name.toUpperCase(),
+  })),
+  ({nameUppercase}) => <div>{nameUppercase}</div>
+)
+```
 
 
 
