@@ -16,6 +16,8 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
   * [addContextProvider()](#addcontextprovider)
   * [getContextHelpers()/getContextHelpersFromInitialValues()](#getcontexthelpersgetcontexthelpersfrominitialvalues)
   * [branchIfNullish()](#branchifnullish)
+  * [branchIfFalsy()](#branchiffalsy)
+  * [branchIfEmpty()](#branchifempty)
   * [addExtendedHandlers()](#addextendedhandlers)
   * [addEffectOnMount()](#addeffectonmount)
   * [addLayoutEffectOnMount()](#addlayouteffectonmount)
@@ -325,6 +327,118 @@ const MyComponent: FC<{name?: string | null, testId: string}> = flowMax(
 
 <MyComponent name="Bert" /> // renders "BERT"
 ```
+
+
+
+### `branchIfFalsy()`
+```js
+branchIfFalsy(
+  propNames: string | string[]
+  opts?: {
+    returns?: (props: Object) => ReactElement
+  }
+): Function
+```
+
+Aborts the chain if any of the given props is "falsy" (eg `null`, `undefined`, `false`, `""`, `0`).
+By default it renders `null`, or you can supply a `returns` option to specify what to render
+
+For Typescript, it'll automatically narrow the types of the given props to be non-nullish (and to exclude `false` if it's a boolean prop)
+after this step in the chain
+
+```typescript
+import {branchIfFalsy} from 'ad-hok-utils'
+
+const MyComponent: FC<{name?: string | null}> = flowMax(
+  branchIfFalsy('name'),
+  addProps(({name}) => ({
+    nameUppercase: name.toUpperCase(),
+  })),
+  ({nameUppercase}) => <div>{nameUppercase}</div>
+)
+
+<MyComponent /> // renders null
+
+<MyComponent name={null} /> // renders null
+
+<MyComponent name="" /> // renders null
+
+<MyComponent name="Bert" /> // renders "BERT"
+
+// or, specify what to render when aborting:
+
+const MyComponent: FC<{name?: string | null, testId: string}> = flowMax(
+  branchIfFalsy('name', {returns: ({testId}) => <div data-testid={testId}>aborted</div>}),
+  addProps(({name}) => ({
+    nameUppercase: name.toUpperCase(),
+  })),
+  ({nameUppercase, testId}) => <div data-testid={testId}>{nameUppercase}</div>
+)
+
+<MyComponent /> // renders "aborted"
+
+<MyComponent name={null} /> // renders "aborted"
+
+<MyComponent name="" /> // renders "aborted"
+
+<MyComponent name="Bert" /> // renders "BERT"
+```
+
+
+
+### `branchIfEmpty()`
+```js
+branchIfEmpty(
+  propNames: string | string[]
+  opts?: {
+    returns?: (props: Object) => ReactElement
+  }
+): Function
+```
+
+Aborts the chain if any of the given props is empty according to [`isEmpty()`](https://lodash.com/docs/4.17.15#isEmpty).
+By default it renders `null`, or you can supply a `returns` option to specify what to render
+
+For Typescript, it'll automatically narrow the types of the given props to be non-nullish after this step in the chain
+
+```typescript
+import {branchIfEmpty} from 'ad-hok-utils'
+
+const MyComponent: FC<{names?: string[] | null}> = flowMax(
+  branchIfEmpty('names'),
+  addProps(({names}) => ({
+    namesUppercase: names.map(name => name.toUpperCase()),
+  })),
+  ({namesUppercase}) => <div>{namesUppercase.join(', ')}</div>
+)
+
+<MyComponent /> // renders null
+
+<MyComponent names={null} /> // renders null
+
+<MyComponent names={[]} /> // renders null
+
+<MyComponent names={["Bert", "Ernest"]} /> // renders "BERT, ERNEST"
+
+// or, specify what to render when aborting:
+
+const MyComponent: FC<{names?: string[] | null, testId: string}> = flowMax(
+  branchIfFalsy('names', {returns: ({testId}) => <div data-testid={testId}>aborted</div>}),
+  addProps(({names}) => ({
+    namesUppercase: names.map(name => name.toUpperCase()),
+  })),
+  ({namesUppercase, testId}) => <div data-testid={testId}>{namesUppercase.join(', ')}</div>
+)
+
+<MyComponent /> // renders "aborted"
+
+<MyComponent names={null} /> // renders "aborted"
+
+<MyComponent names={[]} /> // renders "aborted"
+
+<MyComponent names={["Bert", "Ernest"]} /> // renders "BERT, ERNEST"
+```
+
 
 
 ### `addExtendedHandlers()`
