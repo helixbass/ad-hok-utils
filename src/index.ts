@@ -23,3 +23,4 @@ export {
 export {default as declarePropTypesNarrowing} from './declarePropTypesNarrowing'
 export {default as declarePropTypesForcing} from './declarePropTypesForcing'
 export {default as declarePropTypesLoosening} from './declarePropTypesLoosening'
+export {default as declarePropTypesUnrecognized} from './declarePropTypesUnrecognized'
