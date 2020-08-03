@@ -5,15 +5,19 @@ import {some} from 'lodash/fp'
 import {ensureArray} from './utils'
 import declarePropsNonNullish from './declarePropsNonNullish'
 
-type BranchIfNullishType = <TProps extends {}, TPropNames extends keyof TProps>(
-  propNames: Array<TPropNames> | TPropNames,
+type BranchIfNullishType = <TProps extends {}, TPropName extends keyof TProps>(
+  propNames: Array<TPropName> | TPropName,
   opts?: {
     returns?: (props: TProps) => ReactElement<any, any> | null
   },
 ) => (
   props: TProps,
 ) => TProps &
-  Required<{[PropName in TPropNames]: NonNullable<TProps[PropName]>}>
+  Required<
+    {
+      [propName in TPropName]: NonNullable<TProps[propName]>
+    }
+  >
 
 const branchIfNullish: BranchIfNullishType = (
   propName,
