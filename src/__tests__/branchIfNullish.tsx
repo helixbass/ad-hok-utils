@@ -83,4 +83,33 @@ describe('branchIfNullish()', () => {
     rerender(<Component x={undefined} testId={testId} />)
     expect(screen.queryByTestId(testId)).toBeNull()
   })
+  test('aborts rendering when any of the specified props are undefined/null', () => {
+    interface Props {
+      x?: number | null
+      y?: number | null
+      testId: string
+    }
+
+    const Component: FC<Props> = flowMax(
+      branchIfNullish(['x', 'y']),
+      addProps(({x, y}) => ({
+        z: x + y,
+      })),
+      ({z, testId}) => <div data-testid={testId}>{z}</div>,
+    )
+
+    const testId = 'branch-if-nullish-multiple'
+    const {rerender} = render(<Component testId={testId} />)
+    expect(screen.queryByTestId(testId)).toBeNull()
+    rerender(<Component x={2} y={3} testId={testId} />)
+    expect(screen.getByTestId(testId)).toHaveTextContent('5')
+    rerender(<Component x={null} testId={testId} />)
+    expect(screen.queryByTestId(testId)).toBeNull()
+    rerender(<Component x={undefined} testId={testId} />)
+    expect(screen.queryByTestId(testId)).toBeNull()
+    rerender(<Component x={0} y={3} testId={testId} />)
+    expect(screen.getByTestId(testId)).toHaveTextContent('3')
+    rerender(<Component x={2} y={null} testId={testId} />)
+    expect(screen.queryByTestId(testId)).toBeNull()
+  })
 })
