@@ -1,5 +1,6 @@
 export {default as branchIfNullish} from './branchIfNullish'
 export {default as branchIfFalsy} from './branchIfFalsy'
+export {default as branchIfEmpty} from './branchIfEmpty'
 export {default as addPropTrackingRef} from './addPropTrackingRef'
 export {default as addPropIdentityStabilization} from './addPropIdentityStabilization'
 export {default as cleanupProps} from './cleanupProps'
