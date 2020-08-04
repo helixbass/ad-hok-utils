@@ -3,7 +3,7 @@ import {isFunction} from 'lodash'
 
 type AddReducerOverPropsType = <TProps, TState, TAction>(
   reducer: (props: TProps) => Reducer<TState, TAction>,
-  initialState: TState,
+  initialState: TState | ((props: TProps) => TState),
 ) => (props: TProps) => TProps & TState & {dispatch: (action: TAction) => void}
 
 const addReducerOverProps: AddReducerOverPropsType = (
