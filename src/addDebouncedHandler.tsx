@@ -16,8 +16,8 @@ const addDebouncedHandler: AddDebouncedHandlerType = (
   waitInterval,
   handlerPropName,
 ) => {
-  const refName = 'addDebouncedHandlerRef'
-  const invokeRefHandlerName = 'addDebouncedHandlerInvokeRef'
+  const refName = '_addDebouncedHandler-ref'
+  const invokeRefHandlerName = '_addDebouncedHandler-invokeRef'
 
   return flowMax(
     addPropTrackingRef(handlerPropName, refName),

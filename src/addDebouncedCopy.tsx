@@ -30,8 +30,8 @@ const addDebouncedCopy: AddDebouncedCopyType = (
   propName,
   debouncedPropName,
 ) => {
-  const setterName = 'addDebouncedCopySetter'
-  const refName = 'addDebouncedCopyRef'
+  const setterName = '_addDebouncedCopy-setter'
+  const refName = '_addDebouncedCopy-ref'
 
   return flowMax(
     addState(
