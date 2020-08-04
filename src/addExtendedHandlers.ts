@@ -1,6 +1,6 @@
 import {HandlerCreators, addHandlers} from 'ad-hok'
 
-import {mapValuesWithKey} from './utils'
+import mapValuesWithKey from './utils/mapValuesWithKey'
 
 type AddExtendedHandlersType = <
   TProps,

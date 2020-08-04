@@ -2,7 +2,7 @@ import {ReactElement} from 'react'
 import {branch, renderNothing, returns, flowMax} from 'ad-hok'
 import {some} from 'lodash/fp'
 
-import {ensureArray} from './utils'
+import ensureArray from './utils/ensureArray'
 import declarePropsNonNullish from './declarePropsNonNullish'
 
 type BranchIfNullishType = <TProps extends {}, TPropName extends keyof TProps>(

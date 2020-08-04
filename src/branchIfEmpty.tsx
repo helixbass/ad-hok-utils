@@ -3,7 +3,7 @@ import {branch, renderNothing, returns} from 'ad-hok'
 import {isEmpty} from 'lodash'
 import {some} from 'lodash/fp'
 
-import {ensureArray} from './utils'
+import ensureArray from './utils/ensureArray'
 
 type BranchIfEmptyType = <TProps extends {}, TPropName extends keyof TProps>(
   propNames: Array<TPropName> | TPropName,

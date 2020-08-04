@@ -5,7 +5,7 @@ import {zipObject} from 'lodash'
 
 import cleanupProps from './cleanupProps'
 import addContextProvider from './addContextProvider'
-import {tuple} from './utils'
+import tuple from './utils/tuple'
 
 type AddProviderType<TContextValue> = <TProps extends TContextValue>(
   props: TProps,

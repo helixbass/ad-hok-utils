@@ -2,7 +2,7 @@ import {ReactElement} from 'react'
 import {branch, renderNothing, returns} from 'ad-hok'
 import {some} from 'lodash/fp'
 
-import {ensureArray} from './utils'
+import ensureArray from './utils/ensureArray'
 
 type NonFalse<T> = T extends boolean ? T & true : T
 

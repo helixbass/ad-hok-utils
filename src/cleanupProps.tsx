@@ -1,6 +1,6 @@
 import {omit} from 'lodash'
 
-import {ensureArray} from './utils'
+import ensureArray from './utils/ensureArray'
 
 // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 const cleanupProps = <TProps extends {}, TPropNames extends keyof TProps>(

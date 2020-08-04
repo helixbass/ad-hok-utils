@@ -1,6 +1,6 @@
 import {omit} from 'lodash/fp'
 
-import {ensureArray} from './utils'
+import ensureArray from './utils/ensureArray'
 
 type RemovePropsType = <TProps extends {}, TPropNames extends keyof TProps>(
   propNames: TPropNames[] | TPropNames,
