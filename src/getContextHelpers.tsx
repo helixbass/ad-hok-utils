@@ -1,11 +1,11 @@
 import {createContext, Context} from 'react'
 import {flowMax, addProps, SimplePropsAdder, addContext} from 'ad-hok'
-import {pick} from 'lodash/fp'
 import {zipObject} from 'lodash'
 
 import cleanupProps from './cleanupProps'
 import addContextProvider from './addContextProvider'
 import tuple from './utils/tuple'
+import pick from './utils/pick'
 
 type AddProviderType<TContextValue> = <TProps extends TContextValue>(
   props: TProps,
@@ -47,7 +47,10 @@ export const getContextHelpersFromInitialValues = <TContextValue,>(
   const addProvider: AddProviderType<TContextValue> = flowMax(
     addProps(
       (props) => ({
-        [valuePropName]: pick(propNames, props) as TContextValue,
+        [valuePropName]: pick(
+          propNames as (keyof typeof initialValues)[],
+          props,
+        ) as TContextValue,
       }),
       propNames,
     ),

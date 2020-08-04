@@ -1,8 +1,8 @@
 import {ReactElement} from 'react'
 import {branch, renderNothing, returns, flowMax} from 'ad-hok'
-import {some} from 'lodash/fp'
 
 import ensureArray from './utils/ensureArray'
+import some from './utils/some'
 import declarePropsNonNullish from './declarePropsNonNullish'
 
 type BranchIfNullishType = <TProps extends {}, TPropName extends keyof TProps>(
@@ -27,7 +27,7 @@ const branchIfNullish: BranchIfNullishType = (
   return flowMax(
     branch(
       (props: {[propName: string]: any}) =>
-        some((propName: string) => props[propName] == null)(propNames),
+        some((propName: string) => props[propName] == null, propNames),
       returnsOpt ? returns(returnsOpt) : renderNothing(),
     ),
     declarePropsNonNullish(propName),

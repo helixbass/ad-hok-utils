@@ -1,4 +1,4 @@
-import {isArray} from 'lodash'
+import isArray from './isArray'
 
 type EnsureArrayType = <TMaybeArray>(
   maybeArray: TMaybeArray,

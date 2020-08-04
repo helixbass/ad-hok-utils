@@ -1,6 +1,6 @@
 import {HandlerCreators, addHandlers} from 'ad-hok'
 
-import mapValuesWithKey from './utils/mapValuesWithKey'
+import mapValues from './utils/mapValues'
 
 type AddExtendedHandlersType = <
   TProps,
@@ -13,7 +13,7 @@ type AddExtendedHandlersType = <
 
 const addExtendedHandlers: AddExtendedHandlersType = (extendedHandlers) =>
   addHandlers(
-    mapValuesWithKey(
+    mapValues(
       (extendedHandler, handlerName) => (props: any) => (args: any) => {
         const existingHandler = props[handlerName] || (() => {})
         existingHandler(args)
