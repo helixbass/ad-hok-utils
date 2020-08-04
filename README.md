@@ -15,6 +15,9 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
   * [addDebouncedCopy()](#adddebouncedcopy)
   * [addContextProvider()](#addcontextprovider)
   * [getContextHelpers()/getContextHelpersFromInitialValues()](#getcontexthelpersgetcontexthelpersfrominitialvalues)
+  * [branchIfNullish()](#branchifnullish)
+  * [branchIfFalsy()](#branchiffalsy)
+  * [branchIfEmpty()](#branchifempty)
   * [addExtendedHandlers()](#addextendedhandlers)
   * [addEffectOnMount()](#addeffectonmount)
   * [addLayoutEffectOnMount()](#addlayouteffectonmount)
@@ -26,6 +29,10 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
   * [addComponentBoundary()](#addcomponentboundary)
 - [Typescript-specific helpers](#typescript-specific-helpers)
   * [cleanupProps()](#cleanupprops)
+  * [declarePropTypesNarrowing()](#declareproptypesnarrowing)
+  * [declarePropTypesForcing()](#declareproptypesforcing)
+  * [declarePropTypesUnrecognized()](#declareproptypesunrecognized)
+  * [declarePropsNonNullish()](#declarepropsnonnullish)
 - [Help / Contributions / Feedback](#help--contributions--feedback)
 - [License](#license)
 
@@ -274,6 +281,169 @@ const MyChildComponent: FC = flowMax(
   ({name}) => <div>Hello {name}</div>
 )
 ```
+
+
+### `branchIfNullish()`
+```js
+branchIfNullish(
+  propNames: string | string[]
+  opts?: {
+    returns?: (props: Object) => ReactElement
+  }
+): Function
+```
+
+Encapsulates the common pattern of "aborting" the chain (ie `branch()`'ing to `renderNothing()` or to `returns()` some JSX elements)
+if any of the given props is nullish (ie `null` or `undefined`). By default it renders `null`, or you can supply a `returns` option
+to specify what to render
+
+For Typescript, it'll automatically narrow the types of the given props to be non-nullish after this step in the chain
+
+```typescript
+import {branchIfNullish} from 'ad-hok-utils'
+
+const MyComponent: FC<{name?: string | null}> = flowMax(
+  branchIfNullish('name'),
+  addProps(({name}) => ({
+    nameUppercase: name.toUpperCase(),
+  })),
+  ({nameUppercase}) => <div>{nameUppercase}</div>
+)
+
+<MyComponent /> // renders null
+
+<MyComponent name={null} /> // renders null
+
+<MyComponent name="Bert" /> // renders "BERT"
+
+// or, specify what to render when aborting:
+
+const MyComponent: FC<{name?: string | null, testId: string}> = flowMax(
+  branchIfNullish('name', {returns: ({testId}) => <div data-testid={testId}>aborted</div>}),
+  addProps(({name}) => ({
+    nameUppercase: name.toUpperCase(),
+  })),
+  ({nameUppercase, testId}) => <div data-testid={testId}>{nameUppercase}</div>
+)
+
+<MyComponent /> // renders "aborted"
+
+<MyComponent name={null} /> // renders "aborted"
+
+<MyComponent name="Bert" /> // renders "BERT"
+```
+
+
+
+### `branchIfFalsy()`
+```js
+branchIfFalsy(
+  propNames: string | string[]
+  opts?: {
+    returns?: (props: Object) => ReactElement
+  }
+): Function
+```
+
+Aborts the chain if any of the given props is "falsy" (eg `null`, `undefined`, `false`, `""`, `0`).
+By default it renders `null`, or you can supply a `returns` option to specify what to render
+
+For Typescript, it'll automatically narrow the types of the given props to be non-nullish (and to exclude `false` if it's a boolean prop)
+after this step in the chain
+
+```typescript
+import {branchIfFalsy} from 'ad-hok-utils'
+
+const MyComponent: FC<{name?: string | null}> = flowMax(
+  branchIfFalsy('name'),
+  addProps(({name}) => ({
+    nameUppercase: name.toUpperCase(),
+  })),
+  ({nameUppercase}) => <div>{nameUppercase}</div>
+)
+
+<MyComponent /> // renders null
+
+<MyComponent name={null} /> // renders null
+
+<MyComponent name="" /> // renders null
+
+<MyComponent name="Bert" /> // renders "BERT"
+
+// or, specify what to render when aborting:
+
+const MyComponent: FC<{name?: string | null, testId: string}> = flowMax(
+  branchIfFalsy('name', {returns: ({testId}) => <div data-testid={testId}>aborted</div>}),
+  addProps(({name}) => ({
+    nameUppercase: name.toUpperCase(),
+  })),
+  ({nameUppercase, testId}) => <div data-testid={testId}>{nameUppercase}</div>
+)
+
+<MyComponent /> // renders "aborted"
+
+<MyComponent name={null} /> // renders "aborted"
+
+<MyComponent name="" /> // renders "aborted"
+
+<MyComponent name="Bert" /> // renders "BERT"
+```
+
+
+
+### `branchIfEmpty()`
+```js
+branchIfEmpty(
+  propNames: string | string[]
+  opts?: {
+    returns?: (props: Object) => ReactElement
+  }
+): Function
+```
+
+Aborts the chain if any of the given props is empty according to [`isEmpty()`](https://lodash.com/docs/4.17.15#isEmpty).
+By default it renders `null`, or you can supply a `returns` option to specify what to render
+
+For Typescript, it'll automatically narrow the types of the given props to be non-nullish after this step in the chain
+
+```typescript
+import {branchIfEmpty} from 'ad-hok-utils'
+
+const MyComponent: FC<{names?: string[] | null}> = flowMax(
+  branchIfEmpty('names'),
+  addProps(({names}) => ({
+    namesUppercase: names.map(name => name.toUpperCase()),
+  })),
+  ({namesUppercase}) => <div>{namesUppercase.join(', ')}</div>
+)
+
+<MyComponent /> // renders null
+
+<MyComponent names={null} /> // renders null
+
+<MyComponent names={[]} /> // renders null
+
+<MyComponent names={["Bert", "Ernest"]} /> // renders "BERT, ERNEST"
+
+// or, specify what to render when aborting:
+
+const MyComponent: FC<{names?: string[] | null, testId: string}> = flowMax(
+  branchIfFalsy('names', {returns: ({testId}) => <div data-testid={testId}>aborted</div>}),
+  addProps(({names}) => ({
+    namesUppercase: names.map(name => name.toUpperCase()),
+  })),
+  ({namesUppercase, testId}) => <div data-testid={testId}>{namesUppercase.join(', ')}</div>
+)
+
+<MyComponent /> // renders "aborted"
+
+<MyComponent names={null} /> // renders "aborted"
+
+<MyComponent names={[]} /> // renders "aborted"
+
+<MyComponent names={["Bert", "Ernest"]} /> // renders "BERT, ERNEST"
+```
+
 
 
 ### `addExtendedHandlers()`
@@ -595,6 +765,122 @@ And the only place it's recommended to use `cleanupProps()` is as the last step 
 [`eslint-plugin-ad-hok`](https://github.com/helixbass/eslint-plugin-ad-hok) has a `cleanupprops-last` rule (enabled by its
 `recommended-typescript` setting) that enforces this
 
+
+
+### `declarePropTypesNarrowing()`
+```js
+declarePropTypesNarrowing: () => Function
+```
+
+When "you know better than Typescript" that a given existing prop type can be refined/narrowed, you can use `declarePropTypesNarrowing()`
+to instruct Typescript about the prop types. This could come in handy eg after a `branch()`
+(though prefer [`branchIfNullish()`](#branchifnullish)/[`branchIfFalsy()`](#branchiffalsy)/[`branchIfEmpty()`](#branchifempty) if they
+cover your branch condition, since they do the prop type-narrowing for you):
+
+```typescript
+import {declarePropTypesNarrowing} from 'ad-hok-utils'
+
+interface Item {
+  id: string
+  name?: string
+}
+
+const MyComponent: FC<{item: Item}> = flowMax(
+  branch(({item: {name}}) => !name, renderNothing()),
+  declarePropTypesNarrowing<{item: Item & {name: string}}>(),
+  addProps(({item: {name}}) => ({
+    nameUppercase: name.toUpperCase(),
+  })),
+  ({nameUppercase}) => <div>{nameUppercase}</div>
+)
+```
+
+
+### `declarePropTypesForcing()`
+```js
+declarePropTypesForcing: () => Function
+```
+
+When "you know better than Typescript" that a given existing prop type is different than what it thinks (in a way that's not strictly
+narrowing or loosening relative to what it thinks), you can use `declarePropTypesForcing()`
+to instruct Typescript about the prop types. This could happen if you decide to "reuse" an existing prop name with an incompatible type
+(in general that's not recommended though, as it tends to be confusing to both the reader and Typescript):
+
+```typescript
+import {declarePropTypesForcing} from 'ad-hok-utils'
+
+const MyComponent: FC<{code: number}> = flowMax(
+  addProps(({code}) => ({
+    code: code === 1 ? 'abc' : code,
+  })),
+  // At this point Typescript thinks the type of `code` is `number` because
+  // ad-hok `&`'s together its existing type (`number`) and the new type (`string | number`).
+  // So we can insist on the new type:
+  declarePropTypesForcing<{code: string | number}>(),
+  ({code}) => <div>{isString(code) ? code.toUpperCase() : code + 2}</div>
+)
+```
+
+
+### `declarePropTypesUnrecognized()`
+```js
+declarePropTypesUnrecognized: () => Function
+```
+
+When "you know better than Typescript" that certain props are present that it doesn't know about, you can use `declarePropTypesUnrecognized()`
+to instruct Typescript about the prop types. This could happen if a helper adds props to the chain that it doesn't declare and you need to get
+rid of them to avoid unknown DOM attribute warnings:
+
+```typescript
+import {declarePropTypesUnrecognized} from 'ad-hok-utils'
+import {SimplePropsAdder} from 'ad-hok'
+
+// doesn't declare that it also adds `prefix` to the chain
+type AddName = SimplePropsAdder<{name: string}>
+
+const addName: AddName = flowMax(
+  addProps({
+    prefix: 'Mr.',
+  }),
+  addProps(({prefix}) => ({
+    name: `${prefix} Potatohead`
+  })),
+)
+
+const MyComponent: FC<{className?: string}> = flowMax(
+  addName,
+  declarePropTypesUnrecognized<{prefix: string}>(),
+  // now we can do removeProps() (otherwise Typescript would have complained):
+  removeProps(['prefix']),
+  ({name, ...props}) => <div {...props}>{name}</div>
+)
+```
+
+
+
+### `declarePropsNonNullish()`
+```js
+declarePropsNonNullish: (
+  propNames: string | string[]
+) => Function
+```
+
+When "you know better than Typescript" that certain props are non-nullish (ie not `null` or `undefined` but otherwise the type that it thinks),
+you can use `declarePropsNonNullish()` to instruct Typescript about the prop types. This could also be accomplished using
+[`declarePropTypesNarrowing()`](#declareproptypesnarrowing) so is effectively a shorthand
+
+```typescript
+import {declarePropsNonNullish} from 'ad-hok-utils'
+
+const MyComponent: FC<{name?: string | null}> = flowMax(
+  branch(({name}) => name == null || name === 'Bert', renderNothing()),
+  declarePropsNonNullish('name'),
+  addProps(({name}) => ({
+    nameUppercase: name.toUpperCase(),
+  }),
+  ({nameUppercase}) => <div>{nameUppercase}</div>
+)
+```
 
 
 
