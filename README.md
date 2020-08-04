@@ -561,7 +561,7 @@ const MyComponent: FC = flowMax(
 ```js
 addReducerOverProps: (
   reducer: (props: Object) => ReducerFunction,
-  initialState: Object
+  initialState: Object | (props: Object) => Object
 ): Function
 ```
 
