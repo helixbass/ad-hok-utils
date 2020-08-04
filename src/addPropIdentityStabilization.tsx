@@ -1,5 +1,5 @@
 import {CurriedUnchangedProps, flowMax, addRef, addProps} from 'ad-hok'
-import {isEqual} from 'lodash/fp'
+import isEqual from 'lodash.isequal'
 
 import cleanupProps from './cleanupProps'
 

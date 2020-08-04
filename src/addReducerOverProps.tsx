@@ -1,5 +1,6 @@
 import {useReducer, Reducer, useMemo} from 'react'
-import {isFunction} from 'lodash'
+
+import isFunction from './utils/isFunction'
 
 type AddReducerOverPropsType = <TProps, TState, TAction>(
   reducer: (props: TProps) => Reducer<TState, TAction>,

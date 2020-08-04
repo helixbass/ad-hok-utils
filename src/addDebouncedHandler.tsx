@@ -1,5 +1,5 @@
 import {addHandlers, CurriedUnchangedProps, flowMax} from 'ad-hok'
-import {debounce} from 'lodash'
+import debounce from 'lodash.debounce'
 
 import addPropTrackingRef from './addPropTrackingRef'
 import cleanupProps from './cleanupProps'

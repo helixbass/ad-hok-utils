@@ -1,9 +1,9 @@
 import {ReactElement} from 'react'
 import {branch, renderNothing, returns} from 'ad-hok'
-import {isEmpty} from 'lodash'
-import {some} from 'lodash/fp'
 
-import {ensureArray} from './utils'
+import ensureArray from './utils/ensureArray'
+import some from './utils/some'
+import isEmpty from './utils/isEmpty'
 
 type BranchIfEmptyType = <TProps extends {}, TPropName extends keyof TProps>(
   propNames: Array<TPropName> | TPropName,
@@ -26,7 +26,7 @@ const branchIfEmpty: BranchIfEmptyType = (
   const propNames = ensureArray(propName)
   return branch(
     (props: {[propName: string]: any}) =>
-      some((propName: string) => isEmpty(props[propName]))(propNames),
+      some((propName: string) => isEmpty(props[propName]), propNames),
     returnsOpt ? returns(returnsOpt) : renderNothing(),
   ) as any
 }

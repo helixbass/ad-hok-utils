@@ -1,8 +1,8 @@
 import {ReactElement} from 'react'
 import {branch, renderNothing, returns} from 'ad-hok'
-import {some} from 'lodash/fp'
 
-import {ensureArray} from './utils'
+import ensureArray from './utils/ensureArray'
+import some from './utils/some'
 
 type NonFalse<T> = T extends boolean ? T & true : T
 
@@ -27,7 +27,7 @@ const branchIfFalsy: BranchIfFalsyType = (
   const propNames = ensureArray(propName)
   return branch(
     (props: {[propName: string]: any}) =>
-      some((propName: string) => !props[propName])(propNames),
+      some((propName: string) => !props[propName], propNames),
     returnsOpt ? returns(returnsOpt) : renderNothing(),
   ) as any
 }
