@@ -8,8 +8,8 @@ type AddEffectOnUnmountType = <TProps>(
 ) => CurriedUnchangedProps<TProps>
 
 const addEffectOnUnmount: AddEffectOnUnmountType = (callback) => {
-  const handlerName = 'addEffectOnUnmountHandler'
-  const handlerRefName = 'addEffectOnUnmountHandlerRef'
+  const handlerName = '_addEffectOnUnmount-handler'
+  const handlerRefName = '_addEffectOnUnmount-handlerRef'
   return flowMax(
     addHandlers({
       [handlerName]: (props) => () => {

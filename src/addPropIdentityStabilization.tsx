@@ -10,40 +10,30 @@ type AddPropIdentityStabilizationType = <
   propName: TPropName,
 ) => CurriedUnchangedProps<TProps>
 
+const refName = '_addPropIdentityStabilization-ref'
+const equalRefName = '_addPropIdentityStabilization-equalRef'
+
 const addPropIdentityStabilization: AddPropIdentityStabilizationType = (
   propName,
 ) =>
   flowMax(
-    addRef(
-      'propIdentityStabilizationRef',
-      ({[propName]: propValue}) => propValue,
-    ),
-    addRef(
-      'propIdentityStabilizationEqualRef',
-      ({[propName]: propValue}) => propValue,
-    ),
+    addRef(refName, ({[propName]: propValue}) => propValue),
+    addRef(equalRefName, ({[propName]: propValue}) => propValue),
     addProps(
-      ({
-        propIdentityStabilizationRef,
-        [propName]: propValue,
-        propIdentityStabilizationEqualRef,
-      }) => {
-        const previousValue = propIdentityStabilizationRef.current
-        const previousEqualValue = propIdentityStabilizationEqualRef.current
+      ({[refName]: ref, [propName]: propValue, [equalRefName]: equalRef}) => {
+        const previousValue = ref.current
+        const previousEqualValue = equalRef.current
         if (previousValue === propValue) return {[propName]: previousValue}
         if (previousEqualValue === propValue) return {[propName]: previousValue}
         if (isEqual(previousValue, propValue)) {
-          propIdentityStabilizationEqualRef.current = propValue
+          equalRef.current = propValue
           return {[propName]: previousValue}
         }
-        propIdentityStabilizationRef.current = propValue
+        ref.current = propValue
         return {[propName]: propValue}
       },
     ),
-    cleanupProps([
-      'propIdentityStabilizationRef',
-      'propIdentityStabilizationEqualRef',
-    ]),
+    cleanupProps([refName, equalRefName]),
   )
 
 export default addPropIdentityStabilization
