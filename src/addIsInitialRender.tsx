@@ -1,21 +1,23 @@
 import {addRef, addProps, flowMax, SimplePropsAdder} from 'ad-hok'
 
-import addEffectOnMount from './addEffectOnMount'
 import cleanupProps from './cleanupProps'
 
 type AddIsInitialRenderType = SimplePropsAdder<{
   isInitialRender: boolean
 }>
 
-const refName = 'isInitialRenderRef'
+const refName = '_isInitialRender-ref'
 
 const addIsInitialRender: AddIsInitialRenderType = flowMax(
-  addRef(refName, true),
-  addEffectOnMount(({[refName]: ref}) => () => {
-    ref.current = false
+  addRef(refName, 0),
+  addProps(({[refName]: ref}) => {
+    if (ref.current <= 2) {
+      ref.current = ref.current + 1
+    }
+    return {}
   }),
-  addProps(({[refName]: {current: isInitialRender}}) => ({
-    isInitialRender,
+  addProps(({[refName]: {current: numRenders}}) => ({
+    isInitialRender: numRenders < 2,
   })),
   cleanupProps([refName]),
 )
