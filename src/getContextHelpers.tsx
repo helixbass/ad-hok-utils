@@ -1,6 +1,5 @@
 import {createContext, Context} from 'react'
 import {flowMax, addProps, SimplePropsAdder, addContext} from 'ad-hok'
-import {zipObject} from 'lodash'
 
 import cleanupProps from './cleanupProps'
 import addContextProvider from './addContextProvider'
@@ -91,4 +90,11 @@ class MissingContextValueError extends Error {}
 
 export const toObjectKeys = <TKeys extends string>(
   keys: TKeys[],
-): Record<TKeys, undefined> => zipObject(keys) as Record<TKeys, undefined>
+): Record<TKeys, undefined> =>
+  keys.reduce(
+    (object, key) => ({
+      ...object,
+      [key]: undefined,
+    }),
+    {},
+  ) as Record<TKeys, undefined>
