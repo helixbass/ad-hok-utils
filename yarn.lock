@@ -752,10 +752,10 @@ acorn@^7.1.1, acorn@^7.2.0:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.3.1.tgz#85010754db53c3fbaf3b9ea3e083aa5c5d147ffd"
   integrity sha512-tLc0wSnatxAQHVHUapaHdz72pi9KUyHjq5KyHjGg9Y8Ifdc79pTh2XvI6I1/chZbnM7QtNKzh66ooDogPZSleA==
 
-ad-hok@^0.1.1-beta.0:
-  version "0.1.1-beta.0"
-  resolved "https://registry.yarnpkg.com/ad-hok/-/ad-hok-0.1.1-beta.0.tgz#ad03d051f4cde9b575f3dccfe4f5fe2f253a2de5"
-  integrity sha512-DnfyXlP09xvqV8NWia1NzGaiu0Is54BNZvObhmov1yO8nU0jumkdZu6nMm4caMzl1sysuSFTRbe5AcvtCTtCqA==
+ad-hok@^0.1.1:
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/ad-hok/-/ad-hok-0.1.1.tgz#607d823abcf3492d5a53d873c93e065b121f73e2"
+  integrity sha512-jE8OqHwyqRY4zcZokeBkYxqalm/bacCjzoDzimAjKutWHr6rRyFBuMZkexXai2q/V4mJuoxRazkqUNPPlvnlpw==
 
 ajv@^6.10.0, ajv@^6.10.2, ajv@^6.5.5:
   version "6.12.2"
