@@ -5,11 +5,17 @@ import ensureArray from './utils/ensureArray'
 import some from './utils/some'
 
 type NonFalse<T> = T extends boolean ? T & true : T
+type NonTrue<T> = T extends boolean ? T & false : T
 
 type BranchIfFalsyType = <TProps extends {}, TPropName extends keyof TProps>(
   propNames: Array<TPropName> | TPropName,
   opts?: {
-    returns?: (props: TProps) => ReactElement<any, any> | null
+    returns?: (
+      props: TProps &
+        {
+          [propName in TPropName]: NonTrue<TProps[propName]>
+        },
+    ) => ReactElement<any, any> | null
   },
 ) => (
   props: TProps,

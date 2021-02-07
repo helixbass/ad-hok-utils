@@ -90,7 +90,11 @@ describe('branchIfFalsy()', () => {
     }
 
     const Component: FC<Props> = flowMax(
-      branchIfFalsy('x'),
+      branchIfFalsy('x', {
+        returns: ({x, testId}) => (
+          <div data-testid={testId}>{(x || 'def').toUpperCase()}</div>
+        ),
+      }),
       addProps(({x}) => ({
         y: x && 'abc',
       })),
@@ -102,14 +106,14 @@ describe('branchIfFalsy()', () => {
 
     const testId = 'branch-if-falsy-boolean'
     const {rerender} = render(<Component testId={testId} />)
-    expect(screen.queryByTestId(testId)).toBeNull()
+    expect(screen.getByTestId(testId)).toHaveTextContent('DEF')
     rerender(<Component x={true} testId={testId} />)
     expect(screen.getByTestId(testId)).toHaveTextContent('ABC')
     rerender(<Component x={null} testId={testId} />)
-    expect(screen.queryByTestId(testId)).toBeNull()
+    expect(screen.getByTestId(testId)).toHaveTextContent('DEF')
     rerender(<Component x={undefined} testId={testId} />)
-    expect(screen.queryByTestId(testId)).toBeNull()
+    expect(screen.getByTestId(testId)).toHaveTextContent('DEF')
     rerender(<Component x={false} testId={testId} />)
-    expect(screen.queryByTestId(testId)).toBeNull()
+    expect(screen.getByTestId(testId)).toHaveTextContent('DEF')
   })
 })
