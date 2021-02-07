@@ -7,35 +7,35 @@ import some from './utils/some'
 type NonFalse<T> = T extends boolean ? T & true : T
 type NonTrue<T> = T extends boolean ? T & false : T
 
-type BranchIfFalsyType = <TProps extends {}, TPropName extends keyof TProps>(
+type BranchIfTruthyType = <TProps extends {}, TPropName extends keyof TProps>(
   propNames: Array<TPropName> | TPropName,
   opts?: {
     returns?: (
       props: TProps &
-        {
-          [propName in TPropName]: NonTrue<TProps[propName]>
-        },
+        Required<
+          {
+            [propName in TPropName]: NonFalse<NonNullable<TProps[propName]>>
+          }
+        >,
     ) => ReactElement<any, any> | null
   },
 ) => (
   props: TProps,
 ) => TProps &
-  Required<
-    {
-      [propName in TPropName]: NonFalse<NonNullable<TProps[propName]>>
-    }
-  >
+  {
+    [propName in TPropName]: NonTrue<TProps[propName]>
+  }
 
-const branchIfFalsy: BranchIfFalsyType = (
+const branchIfTruthy: BranchIfTruthyType = (
   propName,
   {returns: returnsOpt} = {},
 ) => {
   const propNames = ensureArray(propName)
   return branch(
     (props: {[propName: string]: any}) =>
-      some((propName: string) => !props[propName], propNames),
+      some((propName: string) => !!props[propName], propNames),
     returnsOpt ? returns(returnsOpt) : renderNothing(),
   ) as any
 }
 
-export default branchIfFalsy
+export default branchIfTruthy

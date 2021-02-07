@@ -17,8 +17,10 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
   * [getContextHelpers()/getContextHelpersFromInitialValues()](#getcontexthelpersgetcontexthelpersfrominitialvalues)
   * [branchIfNullish()](#branchifnullish)
   * [branchIfFalsy()](#branchiffalsy)
+  * [branchIfTruthy()](#branchiftruthy)
   * [branchIfEmpty()](#branchifempty)
   * [branchIfFailsPredicate()](#branchiffailspredicate)
+  * [branchIfPassesPredicate()](#branchifpassespredicate)
   * [addExtendedHandlers()](#addextendedhandlers)
   * [addEffectOnMount()](#addeffectonmount)
   * [addLayoutEffectOnMount()](#addlayouteffectonmount)
@@ -392,6 +394,45 @@ const MyComponent: FC<{name?: string | null, testId: string}> = flowMax(
 
 
 
+### `branchIfTruthy()`
+```js
+branchIfTruthy(
+  propNames: string | string[]
+  opts?: {
+    returns?: (props: Object) => ReactElement
+  }
+): Function
+```
+
+Aborts the chain if any of the given props is "truthy" (eg not `null`, `undefined`, `false`, `""`, `0`).
+By default it renders `null`, or you can supply a `returns` option to specify what to render
+
+For Typescript, it'll automatically narrow the types of the given props to exclude `true` if it's a boolean prop
+after this step in the chain.
+It'll also automatically narrow the type of the given prop to be non-nullish (and to exclude `false` if it's a boolean prop)
+inside the `returns` option callback
+
+```typescript
+import {branchIfTruthy} from 'ad-hok-utils'
+
+const MyComponent: FC<{name?: string | null}> = flowMax(
+  branchIfTruthy('name', {
+    returns: ({name}) => <div>{name.toUpperCase()}</div>
+  }),
+  ({name}) => <div>{name} isn't truthy</div>
+)
+
+<MyComponent name="Bert" /> // renders "BERT"
+
+<MyComponent /> // renders "undefined isn't truthy"
+
+<MyComponent name={null} /> // renders "null isn't truthy"
+
+<MyComponent name="" /> // renders "isn't truthy"
+```
+
+
+
 ### `branchIfEmpty()`
 ```js
 branchIfEmpty(
@@ -496,6 +537,62 @@ const MyComponent: FC<{value: string | number, testId: string}> = flowMax(
 <MyComponent value="hello" /> // renders "HELLO"
 
 <MyComponent value={2} /> // renders "3"
+```
+
+
+
+### `branchIfPassesPredicate()`
+```js
+branchIfPassesPredicate(
+  propName: string
+  predicate: (value: any) => boolean
+  opts?: {
+    returns?: (props: Object) => ReactElement
+  }
+): Function
+```
+
+Aborts the chain if the given predicate function returns true when called with the given prop.
+By default it renders `null`, or you can supply a `returns` option to specify what to render
+
+For Typescript, the predicate is expected to be a [type predicate](https://www.typescriptlang.org/docs/handbook/advanced-types.html#using-type-predicates)
+and it'll automatically narrow the type of the given prop to exclude the type specified by the type predicate after this step in the chain.
+It'll also automatically narrow the type of the given prop to the type specified by the type predicate inside the `returns` option callback
+
+```typescript
+import {branchIfPassesPredicate} from 'ad-hok-utils'
+
+const isNumber = (val: any): val is number =>
+  Object.prototype.toString.call(val) === '[object Number]'
+
+const MyComponent: FC<{value: string | number}> = flowMax(
+  branchIfPassesPredicate('value', isNumber),
+  addProps(({value}) => ({
+    valueUppercase: value.toUpperCase(),
+  })),
+  ({valueUppercase}) => <div>{valueUppercase}</div>
+)
+
+<MyComponent value={2} /> // renders null
+
+<MyComponent value="hello" /> // renders "HELLO"
+
+// or, specify what to render when aborting:
+
+const MyComponent: FC<{value: string | number, testId: string}> = flowMax(
+  branchIfPassesPredicate('value', isNumber, {
+    returns: ({value, testId}) =>
+      <div data-testid={testId}>{value + 1}</div>
+  }),
+  addProps(({value}) => ({
+    valueUppercase: value.toUpperCase(),
+  })),
+  ({valueUppercase, testId}) => <div data-testid={testId}>{valueUppercase}</div>
+)
+
+<MyComponent value={2} /> // renders "3"
+
+<MyComponent value="hello" /> // renders "HELLO"
 ```
 
 
