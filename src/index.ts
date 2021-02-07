@@ -1,5 +1,6 @@
 export {default as branchIfNullish} from './branchIfNullish'
 export {default as branchIfFalsy} from './branchIfFalsy'
+export {default as branchIfTruthy} from './branchIfTruthy'
 export {default as branchIfEmpty} from './branchIfEmpty'
 export {default as branchIfFailsPredicate} from './branchIfFailsPredicate'
 export {default as addPropTrackingRef} from './addPropTrackingRef'
