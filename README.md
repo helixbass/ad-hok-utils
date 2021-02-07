@@ -18,6 +18,7 @@ Ad-hok-utils is a collection of useful [ad-hok](https://github.com/helixbass/ad-
   * [branchIfNullish()](#branchifnullish)
   * [branchIfFalsy()](#branchiffalsy)
   * [branchIfEmpty()](#branchifempty)
+  * [branchIfFailsPredicate()](#branchiffailspredicate)
   * [addExtendedHandlers()](#addextendedhandlers)
   * [addEffectOnMount()](#addeffectonmount)
   * [addLayoutEffectOnMount()](#addlayouteffectonmount)
@@ -428,7 +429,7 @@ const MyComponent: FC<{names?: string[] | null}> = flowMax(
 // or, specify what to render when aborting:
 
 const MyComponent: FC<{names?: string[] | null, testId: string}> = flowMax(
-  branchIfFalsy('names', {returns: ({testId}) => <div data-testid={testId}>aborted</div>}),
+  branchIfEmpty('names', {returns: ({testId}) => <div data-testid={testId}>aborted</div>}),
   addProps(({names}) => ({
     namesUppercase: names.map(name => name.toUpperCase()),
   })),
@@ -442,6 +443,59 @@ const MyComponent: FC<{names?: string[] | null, testId: string}> = flowMax(
 <MyComponent names={[]} /> // renders "aborted"
 
 <MyComponent names={["Bert", "Ernest"]} /> // renders "BERT, ERNEST"
+```
+
+
+
+### `branchIfFailsPredicate()`
+```js
+branchIfFailsPredicate(
+  propName: string
+  predicate: (value: any) => boolean
+  opts?: {
+    returns?: (props: Object) => ReactElement
+  }
+): Function
+```
+
+Aborts the chain if the given predicate function returns false when called with the given prop.
+By default it renders `null`, or you can supply a `returns` option to specify what to render
+
+For Typescript, the predicate is expected to be a [type predicate](https://www.typescriptlang.org/docs/handbook/advanced-types.html#using-type-predicates)
+and it'll automatically narrow the type of the given prop to the type specified by the type predicate after this step in the chain.
+It'll also automatically narrow the type of the given prop to exclude the type specified by the type predicate inside the `returns` option callback
+
+```typescript
+import {branchIfFailsPredicate} from 'ad-hok-utils'
+
+const isNumber = (val: any): val is number =>
+  Object.prototype.toString.call(val) === '[object Number]'
+
+const MyComponent: FC<{value: string | number}> = flowMax(
+  branchIfFailsPredicate('value', isNumber),
+  addProps(({value}) => ({
+    valueIncremented: value + 1,
+  })),
+  ({valueIncremented}) => <div>{valueIncremented}</div>
+)
+
+<MyComponent value="hello" /> // renders null
+
+<MyComponent value={2} /> // renders "3"
+
+// or, specify what to render when aborting:
+
+const MyComponent: FC<{value: string | number, testId: string}> = flowMax(
+  branchIfFailsPredicate('value', isNumber, {returns: ({value, testId}) => <div data-testid={testId}>{value.toUpperCase()}</div>}),
+  addProps(({value}) => ({
+    valueIncremented: value + 1,
+  })),
+  ({valueIncremented, testId}) => <div data-testid={testId}>{valueIncremented}</div>
+)
+
+<MyComponent value="hello" /> // renders "HELLO"
+
+<MyComponent value={2} /> // renders "3"
 ```
 
 
