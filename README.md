@@ -66,7 +66,7 @@ you should be ready to use it on a Typescript + React project
 ```js
 addInterval(
   callback: (props: Object) => Function,
-  delay: number | null,
+  delay: number | null | ((props: Object) => number | null),
   additionalDependenciesThatShouldTriggerResettingInterval?: string[]
 ): Function
 ```
