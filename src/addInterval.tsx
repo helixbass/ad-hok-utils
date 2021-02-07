@@ -2,10 +2,11 @@ import {CurriedUnchangedProps} from 'ad-hok'
 
 import useInterval from './useInterval'
 import get from './utils/get'
+import isFunction from './utils/isFunction'
 
 type AddIntervalType = <TProps>(
   callback: (props: TProps) => () => void,
-  delay: number | null,
+  delay: number | null | ((props: TProps) => number | null),
   additionalDependenciesThatShouldTriggerResettingInterval?: string[],
 ) => CurriedUnchangedProps<TProps>
 
@@ -16,7 +17,7 @@ const addInterval: AddIntervalType = (
 ) => (props) => {
   useInterval(
     callback(props),
-    delay,
+    isFunction(delay) ? delay(props) : delay,
     additionalDependenciesThatShouldTriggerResettingInterval.map((dependency) =>
       get(dependency, props),
     ),
